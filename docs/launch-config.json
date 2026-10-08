@@ -1,0 +1,40 @@
+{
+  "kind": "univ4_hook",
+  "chainId": 1,
+  "token": {
+    "artifact": "src/OG.sol:OG",
+    "constructorArgs": [],
+    "name": "OG",
+    "symbol": "OG",
+    "decimals": 18,
+    "supply": "1000000000000000000000000000"
+  },
+  "hook": {
+    "artifact": "src/OGHook.sol:OGHook",
+    "constructorArgs": [
+      "$poolManager",
+      "$token",
+      "$factory"
+    ],
+    "flags": 8396
+  },
+  "pool": {
+    "pair": "ETH",
+    "fee": 12500,
+    "tickSpacing": 60,
+    "initialPrice": "792281625142643375935439503360000",
+    "currency0": "ETH",
+    "currency1": "$token",
+    "openingMarketCapETH": "10",
+    "tokensPerETH": "100000000"
+  },
+  "childrenCreatedByHookConstructor": {
+    "distributor": "OGHook.distributor() -> src/OGDistributor.sol:OGDistributor",
+    "auction": "OGHook.distributor().auction() -> src/OGAuction.sol:OGAuction"
+  },
+  "immutableCollection": "0x999ce0CE8C5f7661e0c74a568FfE27CEB9177bDB",
+  "immutableTeam": "0x90738ABe9b04622Dc0b3d015a3964Cc7D1Fd1859",
+  "authorityAfterLaunch": "none",
+  "note": "launch.json contains the launch manifest. Ethereum mainnet launch policy 34 supplies liquidity allocation and ranges. The hook constructor atomically deploys both application contracts. The factory, token, and PoolManager are resolved by the launch; no user-owned missing configuration remains.",
+  "policyId": 34
+}

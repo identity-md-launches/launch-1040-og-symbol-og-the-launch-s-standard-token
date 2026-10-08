@@ -1,0 +1,27 @@
+{
+  "kind": "univ4_hook",
+  "hook": {
+    "contract": "OGHook",
+    "constructorArgs": ["$poolManager", "$token", "$factory"],
+    "permissions": [
+      "beforeInitialize",
+      "beforeSwap",
+      "afterSwap",
+      "beforeSwapReturnDelta",
+      "afterSwapReturnDelta"
+    ]
+  },
+  "token": {
+    "contract": "OG",
+    "name": "OG",
+    "symbol": "OG",
+    "decimals": 18
+  },
+  "pool": {
+    "pairedCurrency": "0x0000000000000000000000000000000000000000",
+    "fee": 12500,
+    "tickSpacing": 60,
+    "initialPrice": "792281625142643375935439503360000"
+  },
+  "notes": "Ethereum mainnet, chainId 1, launch policy 34. Native ETH is currency0 and OG is currency1; the zero pairedCurrency denotes native ETH, not an unset address. Opening market cap is 10 ETH at 100,000,000 OG per ETH for the standard 1,000,000,000 OG supply. The no-argument OG constructor mints the complete 18-decimal supply to the factory. OGHook constructor arguments, in order, are IPoolManager, OG token and initializing factory, resolved by the launch. Its constructor atomically creates OGDistributor, which creates OGAuction; discover them through hook.distributor() and distributor.auction(). No separate application deployment or post-launch setup is required. Mine the actual hook initcode against the actual CREATE2 executor with flags 8396 (0x20cc), then deploy and initialize atomically. Only the supplied factory may initialize the ETH/OG pool. Collection is SPEPE 0x999ce0CE8C5f7661e0c74a568FfE27CEB9177bDB; team is 0x90738ABe9b04622Dc0b3d015a3964Cc7D1Fd1859. All four contracts are immutable with no owner, pause or upgrade powers. Both buy and sell hook fees are 3.5% of settled gross ETH, split 2.5% to NFT rewards and 1% to the team, with integer rounding as documented. Buys decay linearly from 50% to 3.5% over the first 60 minutes; all surplus streams through distributor backlog. The 1.25% pool LP fee is additional. Native fees are taken during the swap when the manager holds enough ETH, otherwise recorded as ERC-6909 claims with immediate reward entitlement; anyone may redeemFees after settlement. Exits automatically redeem reward claims. Failed team sends retain fixed-destination teamCredit for permissionless retry. Activation and upgrades burn fixed OG costs; ETH activation buys the exact OG requirement with caller-supplied budget, price limit and deadline. Reward withdrawal requires surrendering the NFT after the 24-hour activation lock. Auction history is per tokenId; all auction payments go to the burn address. Remaining backlog restarts a 30-day stream after zero-active intervals or new launch surplus, as in the accepted implementation. The launch process supplies policy liquidity, resolves infrastructure arguments, simulates and broadcasts the deployment, and publishes addresses and ABIs. Source provenance, economics, mainnet read evidence, checks and review are documented in README.md and docs/."
+}

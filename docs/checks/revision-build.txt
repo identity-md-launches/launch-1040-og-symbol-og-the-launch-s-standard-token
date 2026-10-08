@@ -1,0 +1,673 @@
+Compiling 8 files with Solc 0.8.26
+Solc 0.8.26 finished in 55.05s
+Compiler run successful!
+warning[arbitrary-send-eth]: ETH is sent to a user-controlled destination; restrict the destination or the caller
+   ╭▸ src/Interfaces.sol:30:22
+   │
+30 │         (bool ok,) = to.call{value: amount}("");
+   │                      ━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/arbitrary-send-eth
+
+warning[missing-zero-check]: address parameter is used in a state write or value transfer without a zero-address check
+   ╭▸ src/OGAuction.sol:38:48
+   │
+38 │     constructor(OG token_, ISpepe collection_, address distributor_) {
+   │                                                ━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/missing-zero-check
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+   ╭▸ src/OGAuction.sol:60:13
+   │
+60 │         if (elapsed >= DURATION) return FLOOR;
+   │             ━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+   ╭▸ src/OGAuction.sol:61:13
+   │
+61 │         if (elapsed == 0) return a.startPrice;
+   │             ━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/OGAuction.sol:62:34
+   │
+62 │         int256 logarithm = wadLn(int256(FLOOR * 1e18 / a.startPrice));
+   │                                  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'int256' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/OGAuction.sol:63:41
+   │
+63 │         uint256 result = a.startPrice * uint256(wadExp(logarithm * int256(elapsed) / int256(DURATION))) / 1e18;
+   │                                         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'uint256' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/OGAuction.sol:63:68
+   │
+63 │         uint256 result = a.startPrice * uint256(wadExp(logarithm * int256(elapsed) / int256(DURATION))) / 1e18;
+   │                                                                    ━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'int256' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+   ╭▸ src/OGAuction.sol:63:86
+   │
+63 │         uint256 result = a.startPrice * uint256(wadExp(logarithm * int256(elapsed) / int256(DURATION))) / 1e18;
+   │                                                                                      ━━━━━━━━━━━━━━━━
+   │
+   ├ note: consider disabling this lint if you're certain the cast is safe
+   │       
+   │       // casting to 'int256' is safe because [explain why]
+   │       // forge-lint: disable-next-line(unsafe-typecast)
+   │       
+   │       
+   ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[reentrancy-no-eth]: external call can be reentered before `entered` is updated
+   ╭▸ src/OGAuction.sol:79:17
+   │
+79 │         require(token.transferFrom(msg.sender, token.DEAD(), cost));
+   │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-no-eth]: external call can be reentered before `entered` is updated
+   ╭▸ src/OGAuction.sol:80:9
+   │
+80 │         collection.safeTransferFrom(address(this), recipient, id);
+   │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+   ╭▸ src/OGAuction.sol:70:13
+   │
+70 │         if (block.timestamp > deadline || cost > maxPrice) revert SlippageOrExpired();
+   │             ━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+   ╭▸ src/OGAuction.sol:81:9
+   │
+81 │         emit AuctionSold(id, msg.sender, recipient, cost);
+   │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[missing-events-access-control]: `unfundedFees` is changed without an event but is used for access control
+    ╭▸ src/OGDistributor.sol:121:9
+    │
+121 │         unfundedFees += normal + surplus;
+    │         ━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/missing-events-access-control
+
+warning[missing-events-access-control]: `unfundedFees` is changed without an event but is used for access control
+    ╭▸ src/OGDistributor.sol:127:9
+    │
+127 │         unfundedFees -= msg.value;
+    │         ━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/missing-events-access-control
+
+warning[missing-events-access-control]: `level` is changed without an event but is used for access control
+    ╭▸ src/OGDistributor.sol:205:16
+    │
+205 │         delete level[id];
+    │                ━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/missing-events-access-control
+
+warning[missing-zero-check]: address parameter is used in a state write or value transfer without a zero-address check
+   ╭▸ src/OGDistributor.sol:46:71
+   │
+46 │     constructor(OG token_, ISpepe collection_, IPoolManager manager_, address hook_) {
+   │                                                                       ━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/missing-zero-check
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+   ╭▸ src/OGDistributor.sol:77:24
+   │
+77 │         uint256 now_ = block.timestamp < streamEnd ? block.timestamp : streamEnd;
+   │                        ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[reentrancy-no-eth]: external call can be reentered before `level` is updated
+    ╭▸ src/OGDistributor.sol:147:17
+    │
+147 │         require(token.transferFrom(msg.sender, token.DEAD(), cost));
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGDistributor.sol:109:9
+    │
+109 │         emit StreamScheduled(backlog, streamStart, streamEnd);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGDistributor.sol:192:23
+    │
+192 │         if (old == 0) emit Activated(id, msg.sender, newLevel, cost);
+    │                       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGDistributor.sol:193:14
+    │
+193 │         else emit Upgraded(id, msg.sender, old, newLevel, cost);
+    │              ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[reentrancy-no-eth]: external call can be reentered before `level` is updated
+    ╭▸ src/OGDistributor.sol:160:36
+    │
+160 │         uint256 spent = abi.decode(poolManager.unlock(abi.encode(cost, msg.value, sqrtPriceLimitX96)), (uint256));
+    │                                    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-eth]: uncapped ETH transfer can be reentered before `entered` is updated
+   ╭▸ src/Interfaces.sol:30:22
+   │
+30 │         (bool ok,) = to.call{value: amount}("");
+   │                      ━━━━━━━━━━━━━━━━━━━━━━━━━━
+   │
+   ╰ help: https://getfoundry.sh/forge/linting/reentrancy-eth
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+    ╭▸ src/OGDistributor.sol:157:13
+    │
+157 │         if (block.timestamp > deadline) revert SlippageOrExpired();
+    │             ━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGDistributor.sol:170:69
+    │
+170 │         BalanceDelta delta = poolManager.swap(key, SwapParams(true, int256(cost), limit), "");
+    │                                                                     ━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGDistributor.sol:171:25
+    │
+171 │         uint256 spent = uint256(-int256(delta.amount0()));
+    │                         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGDistributor.sol:172:32
+    │
+172 │         if (delta.amount1() != int256(cost) || spent > budget) revert SlippageOrExpired();
+    │                                ━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unused-return]: return value of an external call is not used
+    ╭▸ src/OGDistributor.sol:174:9
+    │
+174 │         poolManager.settle{value: spent}();
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/unused-return
+
+warning[reentrancy-no-eth]: external call can be reentered before `level` is updated
+    ╭▸ src/OGDistributor.sol:199:32
+    │
+199 │         if (unfundedFees != 0) IOGPool(hook).redeemFees();
+    │                                ━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-no-eth]: external call can be reentered before `entered` is updated
+    ╭▸ src/OGDistributor.sol:210:9
+    │
+210 │         auction.list(id);
+    │         ━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-no-eth]: external call can be reentered before `entered` is updated
+    ╭▸ src/OGDistributor.sol:211:9
+    │
+211 │         collection.safeTransferFrom(msg.sender, address(auction), id);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+    ╭▸ src/OGDistributor.sol:198:13
+    │
+198 │         if (block.timestamp < lastActivation[id] + EXIT_LOCK) revert Locked();
+    │             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGDistributor.sol:213:9
+    │
+213 │         emit Exited(id, msg.sender, amount);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+    ╭▸ src/OGHook.sol:117:16
+    │
+117 │         return elapsed >= DECAY ? NORMAL_FEE : NORMAL_FEE + 0.465e18 * (DECAY - elapsed) / DECAY;
+    │                ━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[block-timestamp]: usage of `block.timestamp` in a comparison may be manipulated by validators
+    ╭▸ src/OGHook.sol:123:16
+    │
+123 │         return elapsed >= DECAY ? 0 : (DECAY - elapsed + 59) / 60;
+    │                ━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/block-timestamp
+
+warning[uninitialized-local]: local variable is read before being initialized
+    ╭▸ src/OGHook.sol:163:25
+    │
+163 │             quotedFee = fee;
+    │                         ━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/uninitialized-local
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:146:33
+    │
+146 │             uint256 requested = uint256(params.amountSpecified < 0 ? -params.amountSpecified : params.amountSpecified);
+    │                                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:149:48
+    │
+149 │                 quoteParams.amountSpecified = -int256(requested - fee);
+    │                                                ━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:152:29
+    │
+152 │                 if (gross > uint256(uint128(type(int128).max))) revert InvalidAmount();
+    │                             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:152:37
+    │
+152 │                 if (gross > uint256(uint128(type(int128).max))) revert InvalidAmount();
+    │                                     ━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint128' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:153:47
+    │
+153 │                 quoteParams.amountSpecified = int256(gross);
+    │                                               ━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:158:31
+    │
+158 │                 if (actual != uint256(-quoteParams.amountSpecified)) fee = actual * rate / (WAD - rate);
+    │                               ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:172:40
+    │
+172 │             if (reason.length != 36 || bytes4(reason) != QuoteResult.selector) {
+    │                                        ━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'bytes4' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[reentrancy-eth]: uncapped ETH transfer can be reentered before `teamCredit` is updated
+    ╭▸ src/OGHook.sol:250:22
+    │
+250 │         (bool ok,) = TEAM.call{value: amount}("");
+    │                      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-eth
+
+warning[reentrancy-no-eth]: external call can be reentered before `busy` is updated
+    ╭▸ src/OGHook.sol:216:17
+    │
+216 │                 poolManager.mint(address(this), 0, fee);
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-no-eth]: external call can be reentered before `busy` is updated
+    ╭▸ src/OGHook.sol:220:17
+    │
+220 │                 distributor.receiveFeeClaims(normal, surplus);
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-no-eth]: external call can be reentered before `busy` is updated
+    ╭▸ src/OGHook.sol:222:17
+    │
+222 │                 poolManager.take(key.currency0, address(this), fee);
+    │                 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGHook.sol:252:14
+    │
+252 │         else emit TeamPaid(amount);
+    │              ━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGHook.sol:226:9
+    │
+226 │         emit FeeSplit(sender, params.zeroForOne, gross, normal, team, surplus, asClaim);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:232:16
+    │
+232 │         return uint256(value < 0 ? -int256(value) : int256(value));
+    │                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:236:21
+    │
+236 │         if (value > uint256(uint128(type(int128).max))) revert InvalidAmount();
+    │                     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:236:29
+    │
+236 │         if (value > uint256(uint128(type(int128).max))) revert InvalidAmount();
+    │                             ━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'uint128' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:237:16
+    │
+237 │         return int128(int256(value));
+    │                ━━━━━━━━━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int128' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[unsafe-typecast]: typecast can truncate values
+    ╭▸ src/OGHook.sol:237:23
+    │
+237 │         return int128(int256(value));
+    │                       ━━━━━━━━━━━━━
+    │
+    ├ note: consider disabling this lint if you're certain the cast is safe
+    │       
+    │       // casting to 'int256' is safe because [explain why]
+    │       // forge-lint: disable-next-line(unsafe-typecast)
+    │       
+    │       
+    ╰ help: https://getfoundry.sh/forge/linting/unsafe-typecast
+
+warning[reentrancy-no-eth]: external call can be reentered before `busy` is updated
+    ╭▸ src/OGHook.sol:270:9
+    │
+270 │         poolManager.unlock(abi.encode(normal, surplus, team));
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-no-eth
+
+warning[unused-return]: return value of an external call is not used
+    ╭▸ src/OGHook.sol:270:9
+    │
+270 │         poolManager.unlock(abi.encode(normal, surplus, team));
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/unused-return
+
+warning[reentrancy-events]: event emitted after an external call; reentrancy can reorder or fabricate logs that off-chain consumers rely on
+    ╭▸ src/OGHook.sol:283:9
+    │
+283 │         emit ClaimsRedeemed(total);
+    │         ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    │
+    ╰ help: https://getfoundry.sh/forge/linting/reentrancy-events
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:124:17
+    │
+124 │         vm.warp(block.timestamp + 40 days);
+    │         ────────━━━━━━━━━━━━━━━─────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:127:27
+    │
+127 │         uint256 started = block.timestamp;
+    │                           ━━━━━━━━━━━━━━━
+128 │         assertEq(dist.streamEnd(), started + 30 days);
+129 │         vm.warp(started + 15 days);
+    │         ────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:143:17
+    │
+143 │         vm.warp(block.timestamp + 10 days);
+    │         ────────━━━━━━━━━━━━━━━─────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:150:17
+    │
+150 │         vm.warp(block.timestamp + 100 days);
+    │         ────────━━━━━━━━━━━━━━━──────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:162:17
+    │
+162 │         vm.warp(block.timestamp + 15 days);
+    │         ────────━━━━━━━━━━━━━━━─────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:286:25
+    │
+286 │         uint256 start = block.timestamp;
+    │                         ━━━━━━━━━━━━━━━
+287 │         vm.warp(start + 18 hours);
+    │         ───────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:295:43
+    │
+295 │         auction.buy(1, 50_000 ether, BOB, block.timestamp);
+    │                                           ━━━━━━━━━━━━━━━
+    ‡
+305 │         vm.warp(vm.getBlockTimestamp() + 24 hours);
+    │         ────────────────────────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+    ╭▸ test/Distributor.t.sol:351:25
+    │
+351 │         uint256 start = block.timestamp;
+    │                         ━━━━━━━━━━━━━━━
+352 │         vm.warp(start + first);
+    │         ────────────────────── `vm.warp` changes this environment here
+    │
+    ├ help: capture it with `vm.getBlockTimestamp()` instead
+    ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+   ╭▸ test/MainnetFork.t.sol:50:17
+   │
+50 │         vm.warp(block.timestamp + 24 hours);
+   │         ────────━━━━━━━━━━━━━━━──────────── `vm.warp` changes this environment here
+   │
+   ├ help: capture it with `vm.getBlockTimestamp()` instead
+   ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+
+warning[environment-read-across-mutation]: `block.timestamp` may be reused across `vm.warp`
+   ╭▸ test/MainnetFork.t.sol:57:17
+   │
+57 │         vm.warp(block.timestamp + 36 hours);
+   │         ────────━━━━━━━━━━━━━━━──────────── `vm.warp` changes this environment here
+   │
+   ├ help: capture it with `vm.getBlockTimestamp()` instead
+   ╰ help: https://getfoundry.sh/forge/linting/environment-read-across-mutation
+

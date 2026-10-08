@@ -1,0 +1,8 @@
+{
+  "acceptedJob": "a38b37bd-6caa-4756-9aa2-6033c44ac713",
+  "bundleURL": "https://api.imd.fun/bundles/8d918c729607f1be5c14bc1b4d2e4b162b6f121f8462e77dad3af25760b1d064",
+  "bundleSHA256": "8d918c729607f1be5c14bc1b4d2e4b162b6f121f8462e77dad3af25760b1d064",
+  "acceptedCommit": "607cb79244f68dd99376c4b1bbedd320570c7700",
+  "import": "Ordinary files extracted from the accepted commit; no submodules or repository metadata imported.",
+  "changes": "Added the production launch manifest/price and policy documentation, current onchain evidence, independent review probes, and deployment-price integration/fork tests. Production src/, dependencies, compiler settings, and contract ABIs preserved."
+}

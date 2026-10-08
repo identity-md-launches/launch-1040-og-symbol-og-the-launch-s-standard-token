@@ -1,0 +1,97 @@
+No files changed, compilation skipped
+
+Ran 2 tests for test/ActivationETH.t.sol:ActivationETHTest
+[PASS] test_exactOGBoughtBurnedWithFeeAndRefund() (gas: 625919)
+[PASS] test_slippageExpiryPartialFillAndInsufficientETHRevert() (gas: 468107)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 422.07ms (999.65µs CPU time)
+
+Ran 4 tests for test/Distributor.t.sol:AuctionTest
+[PASS] testFuzz_monotonicPrice(uint32,uint32) (runs: 256, μ: 32089, ~: 32334)
+[PASS] test_auctionFailuresAndReceiverReentry() (gas: 999002)
+[PASS] test_boundedAuctionViewsAndUnexpectedNFTRejected() (gas: 194948)
+[PASS] test_exponentialDecayFloorBurnAndResaleStart() (gas: 1229353)
+Suite result: ok. 4 passed; 0 failed; 0 skipped; finished in 309.70ms (216.56ms CPU time)
+
+Ran 11 tests for test/Distributor.t.sol:DistributorTest
+[PASS] testFuzz_roundingConservesETH(uint96) (runs: 256, μ: 1211368, ~: 1211273)
+[PASS] test_backlogWaitsAndStreamsWithoutWindfall() (gas: 706836)
+[PASS] test_claimAccountingAtSwapTimeNotRedemption() (gas: 558784)
+[PASS] test_costsAndUnauthorizedOrInvalidActions() (gas: 512441)
+[PASS] test_exitETHReentryAndFailedPayoutRollBack() (gas: 1600994)
+[PASS] test_noRetroactiveRewardsIncludingNewlyMintedNFT() (gas: 630233)
+[PASS] test_streamPausesWithZeroWeightAndRestarts() (gas: 870021)
+[PASS] test_surplusStreamsEvenWithActiveWeight() (gas: 533624)
+[PASS] test_transferCarriesLevelPendingAndLock() (gas: 750683)
+[PASS] test_upgradeResetsLockAndExitNeedsNFTApproval() (gas: 650137)
+[PASS] test_weightedAccrualAndUpgradePreservesPending() (gas: 746507)
+Suite result: ok. 11 passed; 0 failed; 0 skipped; finished in 294.27ms (292.93ms CPU time)
+
+Ran 2 tests for test/Hook.t.sol:FreshManagerTest
+[PASS] test_claimRewardsPrecedeLaterActivationAndExitRedeems() (gas: 10231951)
+[PASS] test_firstBuyWithTokensOnlyMintsAndRedeemsClaims() (gas: 9391287)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 155.69ms (155.21ms CPU time)
+
+Ran 12 tests for test/Hook.t.sol:HookTest
+[PASS] testFuzz_feeBuyAndSell(uint96,bool,bool) (runs: 256, μ: 273029, ~: 269944)
+[PASS] test_decayAndSurplus() (gas: 848559)
+[PASS] test_exactModesRespectAmount() (gas: 803237)
+[PASS] test_feeAllFourModes() (gas: 982522)
+[PASS] test_partialBuyExactInput() (gas: 301702)
+[PASS] test_partialBuyExactOutput() (gas: 246589)
+[PASS] test_partialSellExactInput() (gas: 241994)
+[PASS] test_partialSellExactOutput() (gas: 300482)
+[PASS] test_permissionsAndUnauthorizedCallbacks() (gas: 148720)
+[PASS] test_rejectingTeamDoesNotBlockSwap() (gas: 457167)
+[PASS] test_sellsHaveNoLaunchSurplus() (gas: 490550)
+[PASS] test_wrongPoolRejected() (gas: 78296)
+Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 183.45ms (182.33ms CPU time)
+
+Ran 1 test for test/MainnetFork.t.sol:MainnetForkTest
+[PASS] test_liveCollectionAndCompleteRewardAuctionLifecycle() (gas: 1702692)
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 2.69ms (1.01ms CPU time)
+
+Ran 3 tests for test/ReviewRegression.t.sol:ReviewRegressionTest
+[PASS] testFuzz_tinyFeeRounding(uint16,bool,bool,uint16) (runs: 256, μ: 261280, ~: 254368)
+[PASS] test_fourModesInSameUnlockSettleNetAmounts() (gas: 1135992)
+[PASS] test_teamReentryCannotReuseFeeCredit() (gas: 527011)
+Suite result: ok. 3 passed; 0 failed; 0 skipped; finished in 134.76ms (133.73ms CPU time)
+
+Ran 2 tests for test/Token.t.sol:TokenTest
+[PASS] testFuzz_plainTransfers(uint256) (runs: 256, μ: 69543, ~: 69702)
+[PASS] test_supplyPlainTransferAllowanceAndBurn() (gas: 309826)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 86.44ms (86.23ms CPU time)
+
+Ran 1 test for test/Launch.t.sol:LaunchTest
+[PASS] test_realCreate2DeploymentInitializesAllContracts() (gas: 38835754)
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 273.43ms (271.59ms CPU time)
+
+Ran 2 tests for test/LaunchPolicy.t.sol:LaunchPolicyTest
+[PASS] test_policyPriceSupportsFourModesAndETHActivation() (gas: 11144351)
+[PASS] test_policyPriceTokensOnlyLaunchClaimsAndExit() (gas: 10109053)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 9.88ms (9.55ms CPU time)
+
+Ran 1 test for test/Invariants.t.sol:AccountingInvariantTest
+[PASS]
+AccountingInvariantTest invariants:
+[PASS] invariant_ETHSolvencyAndConservation
+[PASS] invariant_burnAccountingAndSupply
+[PASS] invariant_weightAndLevelCountsConserved
+ AccountingInvariantTest invariants (runs: 128, calls: 8192, reverts: 0)
+
+╭---------------+----------+-------+---------+----------╮
+| Contract      | Selector | Calls | Reverts | Discards |
++=======================================================+
+| RewardHandler | activate | 1726  | 0       | 0        |
+|---------------+----------+-------+---------+----------|
+| RewardHandler | advance  | 1577  | 0       | 0        |
+|---------------+----------+-------+---------+----------|
+| RewardHandler | buy      | 1620  | 0       | 0        |
+|---------------+----------+-------+---------+----------|
+| RewardHandler | exit     | 1679  | 0       | 0        |
+|---------------+----------+-------+---------+----------|
+| RewardHandler | fees     | 1590  | 0       | 0        |
+╰---------------+----------+-------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 3.11s (2.50s CPU time)
+
+Ran 11 test suites in 3.38s (4.98s CPU time): 41 tests passed, 0 failed, 0 skipped (41 total tests)
