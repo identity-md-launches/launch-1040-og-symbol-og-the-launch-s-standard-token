@@ -1,0 +1,47 @@
+# Paper integration and launch boundary
+
+This addition implements design A of the [complete research report](https://api.imd.fun/artifacts/2b2485f3acc59f4892046cf63f5cd468913bf53cbb92bbc110973160d0187bf0) from job `e3b0f9f8-c9bc-4731-a600-d7c0361d61d4`. All 355 lines were read. The downloaded report's SHA-256 is `2b2485f3acc59f4892046cf63f5cd468913bf53cbb92bbc110973160d0187bf0`. Research assumptions are dated 8 October 2026; they are not authenticated Papertrade runtime state.
+
+## Available now
+
+The `#/paper` route reuses the existing OG shell, injected EIP-6963 wallet selector, fonts and tokens. The only existing source edits are the Paper import, route name and conditional render in `web/src/main.tsx`. The additional seventh navigation item can wrap. Existing OG page components, transaction behavior, chain/wallet modules, ABIs, contracts, manifests, lockfiles and build configuration are unchanged.
+
+`reads.ts` uses only the two pinned public Ethereum RPCs. It reads OG balance/decimals, collection balance/ownership and distributor level/weight at one block. Enumeration falls back to bounded batches of `ownerOf`, using `totalMinted`, never `totalSupply`. It verifies each discovered token's owner. Account changes immediately hide old holder results and cancel subsequent scan batches. Holder status means any Swarm Pepe or a positive OG balance; it conveys no Papertrade mint multiplier. No NFT/OG approval, transfer, activation or distributor exit occurs on this route.
+
+`model.ts` implements the report's floating-point equations, including the 0.002% deadband, fixed $100,000 impact reference, BTC/ETH position multipliers, post-impact 2% win fee, 0.98/1.0 loss basis, full-margin liquidation basis, tail high-water mark, conditional funded staking fees, route/activation costs, recovery discount and queued-win cash reduction. Unit tests reproduce the report's worked pair. Default deposit is a **scenario** of 1001 USDC, leaving 1000 after first activation; 25× / 1% / 80% then gives $400 margin per leg and 9,800 PAPER. The resulting all-in $0.001491/PAPER includes $1 activation; removing activation reproduces the report's $0.001389/PAPER. Route-cost inputs initially exclude costs. The ETH manual scenario is $3000/ETH, explicitly labeled; a fresh public swap quote can replace it.
+
+The initial mint branch assumes the full loss stays below the initial $2M tracked-LP threshold. Tail mode applies the current marginal `100*(120M/(120M+H))²` rate to the entire loss and is labeled an estimate. It does not invent integrated threshold-crossing logic or restore rates when LP falls. Liquidation results assume a simultaneous opposite close at the approximate bust trigger, not the later user target. The 1000× special example uses the report's approximate 0.052%; these figures must never produce transaction prices.
+
+The route preview reads Ethereum `eth_gasPrice`, a Uniswap v3 0.05% WETH/USDC QuoterV2 result and Circle `getMinFeeAmount` when available. The swap output includes pool fees/impact; it is not a best-route or guaranteed minimum-output quote. For USDC deposits the swap is skipped, though a 1 ETH indicative quote can supply gas-price conversion data. A 200,000 gas budget is clearly hypothetical, not simulation. Quotes expire after 60 seconds or an input change. Complete forwarding/destination/return costs and minimum received remain unavailable until an official route exists. During validation the Circle fee method did not return a usable result; the UI reports unavailable, never a fallback zero. Conservatively model 11 USDC after inbound costs on first arrival (10 plus 1 activation); official launch quotes must settle the actual first-deposit requirement.
+
+## Single official configuration
+
+`web/src/paper/config.ts` is the only Papertrade execution configuration. Chain ID is 999; all eight protocol addresses, version, relayer URL, operation paths/methods, EIP-712 domains/types and proxy derivation data are empty. There are no zero/burn/test addresses, inferred salts, guessed endpoint paths, assumed signatures, private credentials or published Papertrade ABI selectors. Public Ethereum quote infrastructure is separate from Papertrade execution.
+
+`machine.ts` defines the report's phases from eligibility through funding, credit, session authorization, pair receipts, ordered closing, settlement/queue separation and wallet-signed staking, with withdrawal, repair and reconciliation branches. The journal includes public account/config version, deposit/message and intent/nonce/deadline fields plus executed quantity/entry/receipt data; no key field exists. A partial or mismatched fill requires repair. Expired quotes are refused. Reload requires authoritative reconciliation; queue claims survive withdrawal. A stop enters repair when live or pending exposure exists. The official receipt decoder must provide normalized decimal quantities/entries, and confirmation events must come from verified receipts rather than button clicks.
+
+`policy.ts` accepts authenticated runtime limits and holder budgets. It refuses stale/missing parameters, insufficient available cash/budget, existing positions, OI shortages, queue limits, insufficient session lifetime and closes outside a measured safety envelope. Calculator assumptions cannot substitute for those runtime inputs.
+
+`relayer.ts` is a transport adapter with an explicit official request/response codec boundary. Official paths and methods are supplied through the single config; a codec must implement the published wire schema and validate responses/test vectors. No guessed wire fields are shipped. Requests stay on the configured HTTPS origin, omit cookies, reject redirects, time out, and do not automatically retry uncertain submissions. Status/cancel use the original official intent ID; a fresh nonce is not a recovery mechanism.
+
+`signing.ts` contains launch-only primitives that are not imported by the pre-launch UI. Session material is created only after configuration validation, held in a closure, and exposed only through open/close signing. No persistence, key download/upload, analytics or backend exists. Destroy drops references; JavaScript cannot guarantee physical memory zeroization. Stake/unstake/claim/withdrawal and session registration use real-wallet typed-data signatures from the configured official schemas, after fresh account/chain checks. Empty configuration blocks both key generation and wallet requests, as tested.
+
+The seven guided steps are a **preview**, not a running execution controller. Their action buttons are natively disabled, independently of wallet state. Filling addresses alone must not enable them: supply the official schemas/ABI/codec, reconcile actual receipts, wire the controller to these modules, and validate the full official route and relayer behavior first. No available evidence can establish unknown mint rounding, API semantics, deposit derivation or actual liquidation prices. This is a launch integration foundation, not a claim that trading can already execute.
+
+## Official evidence required before enabling execution
+
+Use the report's release gates: verified chain-999 implementations, ABI and admin/governance settings; official relayer access/policy and EIP-712/test vectors; real proxy derivation and account registration; authorized end-to-end Ethereum/CCTP/Core credit and return-path evidence; session revocation, rejected/uncertain/partial fills and cancellation; mint/queue/rounding/retirement semantics; custody/key/dependency review. Only available USDC can be withdrawn, no automatic queue-debt collateral, no leverage escalation, no queued win represented as returned cash, and a separate real-wallet stake authorization. A batch must not be assumed atomic. If third-party relayer access is unavailable at launch, retain the read-only tools and official-app handoff.
+
+## Public quote-source provenance
+
+These addresses are official Ethereum infrastructure for read-only display, not guessed Papertrade contracts:
+
+| Item | Address / interface | Primary source |
+| --- | --- | --- |
+| QuoterV2 | `0x61fFE014bA17989E743c5F6cB21bF9697530B21e`; `quoteExactInputSingle` | [Uniswap Ethereum deployments](https://developers.uniswap.org/docs/protocols/v3/deployments/v3-ethereum-deployments), [QuoterV2 interface](https://github.com/Uniswap/v3-periphery/blob/main/contracts/interfaces/IQuoterV2.sol) |
+| WETH | `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2` | Same official Uniswap deployment page |
+| Native Ethereum USDC | `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` | [Circle USDC addresses](https://developers.circle.com/stablecoins/usdc-contract-addresses) |
+| TokenMessengerV2 | `0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d`; `getMinFeeAmount(uint256)` | [Circle addresses](https://developers.circle.com/cctp/references/contract-addresses), [official source](https://github.com/circlefin/evm-cctp-contracts/blob/master/src/v2/TokenMessengerV2.sol) |
+| CCTP domains | Ethereum 0, HyperEVM 19; these are not chain IDs | [Circle supported domains](https://developers.circle.com/cctp/concepts/supported-chains-and-domains) |
+
+The three holder addresses come from the task and existing authenticated `verified.json` relationships: Swarm Pepe `0x999ce0CE8C5f7661e0c74a568FfE27CEB9177bDB`, OGDistributor `0xd450ea80aec46b8bffdf0c4f44d3964489b613f2`, OG `0xce7eb1ad9e2e1c784ea05f7ea4a0fe625923d10a`. The unrelated deployment-manifest MerkleDistributor is not used.

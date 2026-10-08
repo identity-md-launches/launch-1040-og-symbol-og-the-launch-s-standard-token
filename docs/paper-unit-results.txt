@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checks": [
+    "Report worked pair: $400 margin, $10,000 notional, 9,800 PAPER and $13.616022 pair cost; activation counted once.",
+    "Deadband boundary, no-mint undefined cost, BTC/ETH impact ordering and scale invariance.",
+    "Queue 1.0 / solvent 0.98 loss basis, close order, paid-rebate suppression, 20% stake and recovery discount.",
+    "Mint tail examples and full-margin hard-bust basis at approximate trigger, not requested later target.",
+    "Input bounds, first-arrival minimum, $10M notional cap and ETH route-cost model.",
+    "Empty official config rejects every adapter operation before network or signing.",
+    "Receipt-driven phases, stale quotes, partial/mismatched fills, reload reconciliation, separate wallet stake, withdrawal minimum and retained queue debt."
+  ]
+}
+Passed: empty-config signing/key generation makes zero wallet calls; official parameter, OI, queue, session, budget and close-safety policy guards.

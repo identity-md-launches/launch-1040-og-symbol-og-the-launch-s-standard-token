@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "files": 295,
+  "fileBytes": 3221457,
+  "includingArtifactsFiles": 299,
+  "includingArtifactsBytes": 3476239,
+  "compressedSnapshotBytes": 906921,
+  "limitBytes": 8388608,
+  "distFiles": 19,
+  "distBytes": 683334,
+  "checks": [
+    "Protected configuration/dependencies/source unchanged",
+    "No submodule entries",
+    "No dependency/cache directories or archives in candidate Git files",
+    "All index and CSS asset URLs relative and present",
+    "Final built Paper source matches delivered source",
+    "Complete candidate snapshot plus artifacts below 8 MiB"
+  ],
+  "exportSha256": {
+    "dist/pepe-3.svg": "bf2feccf3675b764644e7ea8f7144b43940679e827fac807c2b40c2b8f082f3d",
+    "dist/pepe-2.svg": "283a396ea14cf2f5aca8785f2c212b1e0f2615e8dda6785c184b23ed67cdff0a",
+    "dist/favicon.svg": "872f85d144aa8567db3472b703ea709597c7eff35b2afa5d5b1b20b104d72833",
+    "dist/pepe-1.svg": "bd0dda722c34dbb837759415de3f7d17a884360fc504e8401be046be4ffc5094",
+    "dist/index.html": "5ba6a51dd308ca74b839de4e33cf7721be74b0a8f1559e3dcd50ef393bb05449",
+    "dist/licenses/VT323-OFL.txt": "27d9af34210253e7ca1251fbace86c6f65b40031d6ce1a75493a1b2093631298",
+    "dist/licenses/Space-Mono-OFL.txt": "761663b7fb7667764f42243f9b1b2bcfccf41b158a7ab508bed4961dcf377eab",
+    "dist/assets/space-mono-latin-700-normal-D7A851RN.woff": "8cdde79ffa85d2b11cd81a8c8f8fee3708607f76acd07172150b9851723fdd0e",
+    "dist/assets/react-Dfoqj1Wf.js": "aa9bc3a753caf2a50613b0e80debaf799be56043a3d34ed7bb6a326bc569d26a",
+    "dist/assets/space-mono-latin-400-normal-_3DlpgIW.woff": "d9d02a663d01b5d0a75eea2dce0ac220c0eb94aa0144f1191d0e7faff759716c",
+    "dist/assets/ethereum-BmtdXUKG.js": "7aec44d4b43c123ea1d99f90dc98aeeb99f656f5610a7ca8720cc42101573237",
+    "dist/assets/vt323-latin-400-normal-Dqn9ZSPj.woff": "4bf46256dbaa7b6531febc80268b117fb6f71a56ccd9f859de9211b06fd5337c",
+    "dist/assets/space-mono-latin-700-normal-mWgeinG7.woff2": "2d46bd159b53f55c41167a4f1540a074649464194fd1e416f5b4694a6c0f282c",
+    "dist/assets/space-mono-latin-400-normal-Rg4St2Dn.woff2": "fb4a81a2d0a893e5c38c394a7e716a1cef0b24610a0af49c96f6d529bd66bf2b",
+    "dist/assets/index-Bua8l4EB.js": "8ad2e1432aae7d8fb3afbd94c7550658d0a089ee591cce414395e05e888db962",
+    "dist/assets/vt323-latin-400-normal-wDgJuOC9.woff2": "8ddbebcc1048154132e1d78eb9b1f7850bca1b7d857035ccf1cb4318ebc615b6",
+    "dist/assets/index-DLov67w5.css": "b0e8697c863a1b732b625e4a94bb70af978dcecd7114f155a9d325a26fd840f6"
+  },
+  "measurementNote": "Snapshot measured before adding this integrity record and final documentation cross-links; final complete-file recheck includes those files and remains below 3.5 MB."
+}

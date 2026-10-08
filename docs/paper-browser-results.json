@@ -1,0 +1,187 @@
+{
+  "status": "passed",
+  "checks": [
+    "Production assets served at /preview/ subpath; default economics; six widths without page overflow; visible inputs >=16px.",
+    "Market, queue, zero-move, liquidation, empty input, reset, tail progress, recovery and route-cost interactions.",
+    "Live route read and explicit unknown fees; quote price application; changed-input quote disabled.",
+    "All seven step details, disabled launch actions, previous/next bounds, section focus and risk disclosure.",
+    "EIP-6963 fixture connection with live NFT/OG/level/weight reads; only account+chain RPC requested; account removal clears holder results; wallet dialog Escape restores focus.",
+    "Keyboard focus, scoped axe WCAG A/AA scan, measured rendered contrast, reduced motion and 200% text enlargement at 768px. Native zoom not tested.",
+    "All six existing OG routes still navigate; desktop, calculator and mobile production screenshots saved."
+  ],
+  "viewports": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "inputs": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024,
+      "inputs": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "inputs": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "width": 430,
+      "scrollWidth": 430,
+      "inputs": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "inputs": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "inputs": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "contrast": [
+    {
+      "selector": ".paper-main-result strong",
+      "fg": "rgb(238, 242, 232)",
+      "bg": "rgb(18, 23, 18)",
+      "ratio": 15.990767568458697
+    },
+    {
+      "selector": ".paper-main-result p",
+      "fg": "rgb(160, 174, 152)",
+      "bg": "rgb(18, 23, 18)",
+      "ratio": 7.780846031860773
+    },
+    {
+      "selector": ".paper-cash-risk strong",
+      "fg": "rgb(241, 199, 131)",
+      "bg": "rgb(33, 30, 22)",
+      "ratio": 10.489435598391157
+    },
+    {
+      "selector": ".paper-field label",
+      "fg": "rgb(238, 242, 232)",
+      "bg": "rgb(18, 23, 18)",
+      "ratio": 15.990767568458697
+    },
+    {
+      "selector": ".paper-holder .primary",
+      "fg": "rgb(20, 32, 14)",
+      "bg": "rgb(180, 240, 120)",
+      "ratio": 12.614491361732847
+    }
+  ],
+  "consoleErrors": [],
+  "failedStatic": [],
+  "liveLimitations": [
+    "CCTP on-chain minimum fee unavailable. No zero fee is assumed."
+  ],
+  "routeStatus": "Fresh · block 26,149,039 · 7:01:23 PM",
+  "routeRows": "ETH → USDC swap output\n241.415687 USDC\nEthereum gas price\n2.2485 gwei\n200,000 gas budget · scenario\n0.00044969 ETH\nCCTP on-chain fee floor\nNot available\nForwarding + destination gas\nRoute quote at launch\nGuaranteed minimum received\nUnavailable before launch",
+  "holder": "Holder\n\n0.0000 OG · 3 Swarm Pepes · total weight 0\n\nView NFT levels and weights\nPepe #1 · level 0 · weight 0\nPepe #2 · level 0 · weight 0\nPepe #3 · level 0 · weight 0\n\nBlock 26,149,039 · 7:01:26 PM. Holder status does not increase Papertrade emissions.",
+  "focus": {
+    "width": "2px",
+    "style": "solid",
+    "color": "rgb(210, 255, 159)"
+  },
+  "axe": {
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr"
+    ],
+    "passes": 23
+  },
+  "reducedMotion": "0s"
+}

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { type Address, type Hex, parseUnits } from "viem";
 import * as C from "./chain";
 import { useWallet, type WalletState } from "./wallet";
+import Paper from "./paper/Paper";
 import "@fontsource/vt323/latin-400.css";
 import "@fontsource/space-mono/latin-400.css";
 import "@fontsource/space-mono/latin-700.css";
@@ -14,6 +15,7 @@ const pages = [
   "Leaderboard",
   "Auctions",
   "Stats",
+  "Paper",
 ] as const;
 type Page = (typeof pages)[number];
 const slug = (p: Page) => p.toLowerCase().replace(" ", "-");
@@ -492,6 +494,7 @@ function App() {
             {walletError && <p role="alert">{walletError}</p>}
           </div>
         )}
+        {page === "Paper" && <Paper wallet={wallet} connect={() => setWalletOpen(true)} />}
         {page === "Home" && (
           <Home state={state} totals={totals} eventError={eventError} />
         )}

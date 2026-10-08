@@ -1,8 +1,10 @@
 # OG / Swarm Pepe — live launch website
 
-The new static React/TypeScript site is in `web/`; the finished production export is in **`dist/`**. It connects to launch #1040 on Ethereum mainnet. No contract was deployed, replaced or changed by this website task.
+The static React/TypeScript site is in `web/`; the finished production export is in **`dist/`**. It connects to launch #1040 on Ethereum mainnet. No contract was deployed, replaced or changed by this website task.
 
-**Publication status:** the export is ready for IMD with site label **`og`**, but this workspace exposes no IMD publisher or `build-website` skill. No hosted URL is claimed. See [the site validation record](docs/site-validation.md) for actual results and limits, and [DESIGN.md](DESIGN.md) for the implemented design system.
+**Paper addition:** open `#/paper` for the holder check, research calculator, public route preview, seven launch steps and risk guide. Trading stays disabled until official Papertrade deployment and relayer integration are verified. Existing OG pages and transaction logic are preserved. See [Paper validation](docs/paper-validation.md), [launch integration](docs/paper-launch.md), and [DESIGN.md](DESIGN.md).
+
+**Publication status:** the complete export is ready for site label **`og`**, the existing `og.site.identitymd.eth` site named by the supplied project record. This task does not publish a new hosted version: no IMD publisher or installed `build-website` skill is available. Publish the delivered `dist/` as its next version.
 
 ## Install, preview and rebuild
 
@@ -15,13 +17,13 @@ npm run build --prefix web
 npm run preview --prefix web -- --host 127.0.0.1 --port 4173
 ```
 
-Open `http://127.0.0.1:4173/`. Stop preview with Ctrl+C. For source development use `npm run dev --prefix web`. All frontend manifests/configuration and the lockfile live under `web/`; existing Foundry configuration/dependencies are unchanged. `dist/` includes the complete static runtime, fonts, font licenses, and locally bundled on-chain hero artwork. Vite uses `base: './'`; all six pages use hash routing. The publisher serves these files and does not rebuild them. No API key, WalletConnect service, backend or environment file is required.
+Open `http://127.0.0.1:4173/`. Stop preview with Ctrl+C. For source development use `npm run dev --prefix web`. All frontend manifests/configuration and the lockfile live under `web/`; existing Foundry configuration/dependencies are unchanged. `dist/` includes the complete static runtime, fonts, font licenses, and locally bundled on-chain hero artwork. Vite uses `base: './'`; all seven pages use hash routing. The publisher serves these files and does not rebuild them. No API key, WalletConnect service, backend or environment file is required.
 
 ## Publish on IMD
 
 Publish the **contents of repository-root `dist/`**, with `index.html` at the site root, using the IMD site label **`og`** for this existing project. Include the `assets/` and `licenses/` directories, `favicon.svg`, and the three `pepe-*.svg` files. Hash routes require no rewrite rules and relative asset URLs also work at a gateway subpath. Use HTTPS for the public wallet-facing site.
 
-This assignment's environment did not provide an IMD publish method, CLI, hosting credential or existing site endpoint. The source and complete export are delivered for the assignment's publisher; publishing and checking the resulting public URL are the remaining external step. No unverified CLI command or guessed site URL is provided.
+This environment provides no IMD publish method or hosting credential. The source and export are delivered for the assignment's publisher; publication and checking the new hosted version remain external steps. Preserve the existing site label/name; do not create a replacement OG deployment.
 
 ## Contract integration
 
@@ -35,7 +37,24 @@ Only injected EIP-6963 wallets and the legacy injected provider are supported. T
 
 Numeric contract values (fees, prices, pool key, decimals, supply, level costs/weights, locks and auction parameters) are read from chain. Static numbers in the app are interface/protocol settings such as slippage policy, pagination, router opcodes and the v4 TickMath lower bound. They are not substituted contract state. There is no test RPC switch or test key in the production site.
 
-## Validation and reproduction
+## Paper validation and reproduction (this revision)
+
+The production build, separate typecheck, report-arithmetic/state/launch-gate checks and Chromium interactions passed. The browser exercised the production export under `/preview/`, checked widths 1440/1024/768/430/390/320, live holder/route reads, all seven steps, input errors, queue and tail scenarios, disabled actions, wallet disconnect and keyboard focus. A scoped axe scan found zero violations (23 passing rules, one manual-review item). A reproduced 200% text-enlargement overflow was fixed and rechecked. There were no JavaScript page errors or failed static assets. Actual results, six-domain findings and remaining limits are in [docs/paper-validation.md](docs/paper-validation.md), [browser results](docs/paper-browser-results.json) and [unit results](docs/paper-unit-results.txt).
+
+After installing the unchanged locked dependencies above:
+
+```sh
+cd web
+npx --no-install tsx scripts/paper-check.ts
+# Requires Chromium. PAPER_CHROME may specify an installed executable.
+node scripts/paper-browser-check.mjs ../dist ../artifacts
+```
+
+The browser harness owns and closes a temporary local static server and headless browser. It reads public chain data and injects a **read-only fixture** for the discovered owner of Pepe #1; it implements no signing or transaction method. Real wallet-extension popups, native zoom, screen readers and physical phones remain untested. CCTP's on-chain minimum fee was unavailable in the executed read; the UI says so. Papertrade live metrics, end-to-end route minima, relayer execution and exact contract mint/liquidation behavior cannot be tested before official publication.
+
+For this restricted contributor run, dependencies were installed under the disposable `test/scratch/build/` copy using the exact existing manifest/lockfile; no `node_modules/` was created in delivered source. Actual build commands were `npm run typecheck --prefix test/scratch/build` and `npm run build --prefix test/scratch/build -- --outDir ../../../dist`. The standard `web/` commands above produce the same export with the unchanged Vite config. No dependency or ignore-file change was made. Do not submit dependency/cache folders, npm archives or source maps. See the [export and bundle integrity check](docs/paper-integrity-results.json).
+
+## Earlier OG validation and reproduction (prior delivery)
 
 The production build and separate TypeScript check passed. Direct-mainnet interaction validation passed at block 26147636. The final browser/mainnet-fork run passed buy, sell, OG and ETH activation, OG and ETH upgrades, locked/unlocked exit and auction purchase, with **14 successful transaction receipts** against the live addresses. No mainnet transaction was sent. All six pages passed overflow checks at 768, 390 and 320px; desktop and populated transaction states were inspected. See [site-fork-validation.json](docs/site-fork-validation.json) and [the six-domain review](docs/site-validation.md).
 
