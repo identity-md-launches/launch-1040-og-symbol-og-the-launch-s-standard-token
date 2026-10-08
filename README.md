@@ -1,8 +1,71 @@
-# OG / Swarm Pepe
+# OG / Swarm Pepe — live launch website
+
+The new static React/TypeScript site is in `web/`; the finished production export is in **`dist/`**. It connects to launch #1040 on Ethereum mainnet. No contract was deployed, replaced or changed by this website task.
+
+**Publication status:** the export is ready for IMD with site label **`og`**, but this workspace exposes no IMD publisher or `build-website` skill. No hosted URL is claimed. See [the site validation record](docs/site-validation.md) for actual results and limits, and [DESIGN.md](DESIGN.md) for the implemented design system.
+
+## Install, preview and rebuild
+
+Use Node 22.12+ (checked with Node 24.21.0). From the repository root:
+
+```sh
+npm ci --prefix web
+npm run typecheck --prefix web
+npm run build --prefix web
+npm run preview --prefix web -- --host 127.0.0.1 --port 4173
+```
+
+Open `http://127.0.0.1:4173/`. Stop preview with Ctrl+C. For source development use `npm run dev --prefix web`. All frontend manifests/configuration and the lockfile live under `web/`; existing Foundry configuration/dependencies are unchanged. `dist/` includes the complete static runtime, fonts, font licenses, and locally bundled on-chain hero artwork. Vite uses `base: './'`; all six pages use hash routing. The publisher serves these files and does not rebuild them. No API key, WalletConnect service, backend or environment file is required.
+
+## Publish on IMD
+
+Publish the **contents of repository-root `dist/`**, with `index.html` at the site root, using the IMD site label **`og`** for this existing project. Include the `assets/` and `licenses/` directories, `favicon.svg`, and the three `pepe-*.svg` files. Hash routes require no rewrite rules and relative asset URLs also work at a gateway subpath. Use HTTPS for the public wallet-facing site.
+
+This assignment's environment did not provide an IMD publish method, CLI, hosting credential or existing site endpoint. The source and complete export are delivered for the assignment's publisher; publishing and checking the resulting public URL are the remaining external step. No unverified CLI command or guessed site URL is provided.
+
+## Contract integration
+
+The token/hook and Uniswap infrastructure addresses originate in the supplied deployment/network records, copied to `web/src/deployment.json`. The distributor, auction and collection are discovered through the live hook/distributor getters, and the verified relationships and runtime hashes are retained in `web/src/verified.json`. The unrelated manifest MerkleDistributor is not used. Token and hook ABI hashes match the supplied canonical hashes; all four app ABIs match accepted source compilation.
+
+Home reads price in ETH from the pool state, market cap from unburned supply × spot price, total burned, confirmed ETH exit payouts and launch decay. Trade uses the provided v4 Quoter and Universal Router, includes hook fees in quotes, displays hook/pool percentages separately and protects output with slippage and a deadline. Sell approvals use the supplied Permit2; all generated allowances are exact amounts, never unlimited. Native input left over at the router is swept back to the connected account.
+
+My Pepes loads wallet ownership and on-chain tokenURI art, levels, weights, pending ETH and current backlog earnings per hour. OG activation/upgrades burn the exact difference; ETH activation buys the exact burn amount with a maximum budget and refund. Exits require the chain-exposed lock and a per-NFT approval, clearly surrender the NFT, and pay pending ETH. Auctions are paged at one block; prices tick as labeled estimates and are reread before signing. All event totals and the leaderboard are reconstructed from the deployment block, with overlapping rescans for recent reorgs.
+
+Only injected EIP-6963 wallets and the legacy injected provider are supported. The site checks chain 1, offers a switch, checks deployed code before writes, previews every approval/action before opening the wallet, simulates each step, and links receipts to Etherscan. Rejected calls/errors stay visible. Screenshots and the fork test use an injected Anvil provider; real MetaMask/Rabby popup testing remains unperformed.
+
+Numeric contract values (fees, prices, pool key, decimals, supply, level costs/weights, locks and auction parameters) are read from chain. Static numbers in the app are interface/protocol settings such as slippage policy, pagination, router opcodes and the v4 TickMath lower bound. They are not substituted contract state. There is no test RPC switch or test key in the production site.
+
+## Validation and reproduction
+
+The production build and separate TypeScript check passed. Direct-mainnet interaction validation passed at block 26147636. The final browser/mainnet-fork run passed buy, sell, OG and ETH activation, OG and ETH upgrades, locked/unlocked exit and auction purchase, with **14 successful transaction receipts** against the live addresses. No mainnet transaction was sent. All six pages passed overflow checks at 768, 390 and 320px; desktop and populated transaction states were inspected. See [site-fork-validation.json](docs/site-fork-validation.json) and [the six-domain review](docs/site-validation.md).
+
+```sh
+npm run test:interactions --prefix web
+# Requires Anvil and Chrome; the harness starts/stops a local fork and preview.
+OG_FORK_BLOCK=26147577 npm run test:fork --prefix web
+```
+
+The recorded fork block makes the test reproducible with the original owner/state of token #1. It reads that actual owner, impersonates only on the local fork and changes only fork ETH/time. `OG_CHROME` can point to a Chrome/Chromium executable (default `/usr/bin/google-chrome`). The public RPC must retain that historical block. Reports and screenshots are written under `artifacts/`. The submission environment collects that directory separately; durable text results are also in `docs/`.
+
+To regenerate accepted ABIs and verify deployed runtime, with the original Foundry toolchain installed:
+
+```sh
+forge build --out test/scratch/forge-out --cache-path test/scratch/forge-cache
+npm run verify:chain --prefix web
+npm run build --prefix web
+```
+
+`verify:chain` compares compiled ABI data, pinned token/hook ABI hashes, and runtime excluding immutable slots; it then records full live code hashes and derives the three local hero SVGs from tokenURI. The site also checks those full runtime hashes on startup. This command is not necessary for ordinary preview or rebuilding the delivered frontend.
+
+Known limits: IMD publication unavailable; no physical-device/native-zoom/screen-reader session; no real extension popup test; public RPC history/ownership scans may be slow or transiently unavailable. The app makes those loading/error states visible. Market cap is ETH-denominated and labeled circulating. Backlog rate is not a forecast of future trading fees. No dependency caches, `node_modules`, source maps or npm archives belong in the Git submission. No ignore file was modified.
+
+## Earlier contract implementation record
+
+The following preserves the prior contract delivery record. Its earlier fixture-based tests are separate from the new website test against already deployed contracts.
 
 Started from accepted job `a38b37bd-6caa-4756-9aa2-6033c44ac713`, bundle SHA-256 `8d918c729607f1be5c14bc1b4d2e4b162b6f121f8462e77dad3af25760b1d064`. Download hash and commit provenance are recorded in `docs/provenance.json`. The production contract logic, compiler settings, vendored dependencies and ABIs are preserved; this revision resolves the launch price and extends validation.
 
-Immutable Ethereum mainnet contracts for an ETH/OG Uniswap v4 launch, weighted SPEPE rewards, and Dutch auctions. No website, owner, upgrade, pause, withdrawal administrator, oracle, or post-launch configuration. All required Solidity dependencies are ordinary vendored files; the default build/test needs no network after the pinned compiler is installed.
+Immutable Ethereum mainnet contracts for an ETH/OG Uniswap v4 launch, weighted SPEPE rewards, and Dutch auctions. No owner, upgrade, pause, withdrawal administrator, oracle, or post-launch configuration. All required Solidity dependencies are ordinary vendored files; the default build/test needs no network after the pinned compiler is installed.
 
 ```sh
 forge build

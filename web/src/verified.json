@@ -1,0 +1,60 @@
+{
+  "sourceCommit": "2b618def940c6686b92f10261a03eaca29e8f8ce",
+  "rpc": "https://ethereum-rpc.publicnode.com",
+  "chainId": 1,
+  "block": 26147506,
+  "contracts": {
+    "OG": {
+      "address": "0xce7eb1ad9e2e1c784ea05f7ea4a0fe625923d10a",
+      "abiHash": "3c22d30db7e1ffcfe8d9d59aab3fd6539cf2ef5fb68521d45de14ce83c052553",
+      "codeHash": "0xccfd3bb49d8eed557d4d642c3f6a098d51b845c4d95165cf15375512d0f33226",
+      "runtimeMatchesAccepted": true
+    },
+    "OGHook": {
+      "address": "0x22fded8abce0d93979ebb2a04cfc37c110abe0cc",
+      "abiHash": "6bbe83bcc9e030a775b33e2be67ca6d097aac69f2b74fd7794c3cbee0dee304d",
+      "codeHash": "0x3d97d4c595bf53ea30dad214f15891f17560123259783aa847021c2099e432c1",
+      "runtimeMatchesAccepted": true
+    },
+    "OGDistributor": {
+      "address": "0xd450ea80aeC46B8bFfdf0C4F44d3964489B613f2",
+      "abiHash": "371cc78ef96df829cea10321800678f0fe45ea182004386900f869b99d5b77f5",
+      "codeHash": "0x6307a763d18f352f119e22fa326cac7558ef95522e7417e131dec041d857fa11",
+      "runtimeMatchesAccepted": true
+    },
+    "OGAuction": {
+      "address": "0xb0d2d2Cfe7A1b14d1f34135C3C7a8d152c4262e9",
+      "abiHash": "b73f297513e4f030bd6d015dd2dc210bed6a680a3636f6ead617f0dec307167a",
+      "codeHash": "0x30d767475041e3f41be6cfd6c3d67d820eed2137ab93e0ae948c317dd56f16da",
+      "runtimeMatchesAccepted": true
+    },
+    "collection": {
+      "address": "0x999ce0CE8C5f7661e0c74a568FfE27CEB9177bDB",
+      "codeHash": "0x3d6e46c9e3ddc8fe7234f0f16b266d023a576512b4a83cb93e59b2bcde20be7e"
+    },
+    "poolManager": {
+      "address": "0x000000000004444c5dc75cb358380d2e3de08a90",
+      "codeHash": "0x785f1014552b7ce7d5fb7d0c970ca60edee94fd00425d7ca21609acac7ce1293"
+    },
+    "universalRouter": {
+      "address": "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+      "codeHash": "0x6a5f46971b50c6e1b7eef97902311444e479d734e4f80ad88367783cf373fe7f"
+    },
+    "quoter": {
+      "address": "0x52f0e24d1c21c8a0cb1e5a5dd6198556bd9e1203",
+      "codeHash": "0x06de58fa119c5deaa7a667fb92d3894e25d9160e62fb82c8d86d43b47eefe441"
+    },
+    "stateView": {
+      "address": "0x7ffe42c4a5deea5b0fec41c94c136cf115597227",
+      "codeHash": "0xd7947778589cf4aac9a092a4451292a2056380941635ab7006d3c691d8dfd878"
+    },
+    "positionManager": {
+      "address": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+      "codeHash": "0x77e36c08b19959a30dde46dec9abe6208e371ff2f56884a56fe1e1a53615528b"
+    },
+    "permit2": {
+      "address": "0x000000000022d473030f116ddee9f6b43ac78ba3",
+      "codeHash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131"
+    }
+  }
+}

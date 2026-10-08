@@ -1,0 +1,21 @@
+{
+  "chainId": 1,
+  "sourceCommit": "2b618def940c6686b92f10261a03eaca29e8f8ce",
+  "deploymentBlock": 26147432,
+  "token": "0xce7eb1ad9e2e1c784ea05f7ea4a0fe625923d10a",
+  "hook": "0x22fded8abce0d93979ebb2a04cfc37c110abe0cc",
+  "rpc": "https://ethereum-rpc.publicnode.com",
+  "explorer": "https://etherscan.io",
+  "v4": {
+    "poolManager": "0x000000000004444c5dc75cb358380d2e3de08a90",
+    "universalRouter": "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "quoter": "0x52f0e24d1c21c8a0cb1e5a5dd6198556bd9e1203",
+    "stateView": "0x7ffe42c4a5deea5b0fec41c94c136cf115597227",
+    "positionManager": "0xbd216513d74c8cf14cf4747e6aaa6420ff64ee9e",
+    "permit2": "0x000000000022d473030f116ddee9f6b43ac78ba3"
+  },
+  "abiHashes": {
+    "OG": "3c22d30db7e1ffcfe8d9d59aab3fd6539cf2ef5fb68521d45de14ce83c052553",
+    "OGHook": "6bbe83bcc9e030a775b33e2be67ca6d097aac69f2b74fd7794c3cbee0dee304d"
+  }
+}

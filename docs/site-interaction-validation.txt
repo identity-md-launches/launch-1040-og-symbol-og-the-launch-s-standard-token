@@ -1,0 +1,20 @@
+
+> og-launch-site@1.0.0 test:interactions
+> tsx scripts/interaction-check.ts
+
+{
+  "status": "passed",
+  "block": "26147636",
+  "checks": [
+    "amount precision and bounds",
+    "slippage bounds and rounding",
+    "unsafe metadata URL rejection",
+    "live runtime and relationship verification",
+    "real v4 quote",
+    "buy/sell action encoding and native refund",
+    "event reconstruction agrees with active counts",
+    "on-chain NFT metadata"
+  ],
+  "buyQuote": "53428712526607704857338",
+  "activeCount": 23
+}

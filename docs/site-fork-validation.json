@@ -1,0 +1,192 @@
+{
+  "status": "passed",
+  "checks": [
+    "Home reflow 1440px: passed",
+    "Home reflow 768px: passed",
+    "Home reflow 390px: passed",
+    "Home reflow 320px: passed",
+    "Wallet dialog: keyboard open, native modal focus, Escape and focus restoration: passed",
+    "Wrong-chain notice and injected wallet switch to chainId 1: passed",
+    "Skip link preserves hash route; invalid amount is announced and focused: passed",
+    "Delayed quote is discarded when the amount changes: passed",
+    "Buy ETH → OG through site / real router / real hook: passed",
+    "Sell OG → ETH through site, exact OG and Permit2 approvals: passed",
+    "Activate level 1 with OG through site: passed",
+    "Upgrade L1 → L2 with OG, only cost difference charged: passed",
+    "Upgrade L2 → L3 using ETH exact-output swap through site: passed",
+    "Exit blocked during chain-derived lock: passed",
+    "Leaderboard reconstructs activation and filters level: passed",
+    "Exit after lock through site: per-NFT approval, ETH payout, NFT handed to real auction, level reset: passed",
+    "Auction buy through site: actual OG floor burned, recipient receives NFT at L0 with zero pending: passed",
+    "Activate level 0 → 1 directly with ETH after auction purchase: passed",
+    "Stats event filter reflects real auction sale: passed",
+    "Trade reflow at 768, 390, 320px: passed",
+    "My Pepes reflow at 768, 390, 320px: passed",
+    "Leaderboard reflow at 768, 390, 320px: passed",
+    "Auctions reflow at 768, 390, 320px: passed",
+    "Stats reflow at 768, 390, 320px: passed"
+  ],
+  "transactions": [
+    "0x237c20a99ef97094458a43ad7a633a0d786241ce47ac4c9d5fe34c6defbac3b1",
+    "0xa554043effc8de46b7cea3f56c94e2302a67025463d92440eceffeef0554fb79",
+    "0xd9e7f589a274099d89ebfdec73f71fe21b6957c3996820df6771fd08c0897754",
+    "0xe7688ccd650c6d0df81500f9d3e68d34b104f7228f85486e65523f9cfb7b8758",
+    "0xc24e4d55ea44c80dcd5abfd40249b80381f9efd834ffbacf5c68f449e331412c",
+    "0x18862065134de9b50aac414c9c11493025e8e2740309fb618345c4296d67c5c8",
+    "0xb77c8a25ba917aaa6306e9bc316efeba41c8ba730901b672f560d7eb11002aef",
+    "0x4bba702a5cf628252d6958fc2f7e08bba518e2d80b1930c53f40cc7bd94e4a28",
+    "0xb39c0ddda353a94d62cffa75e35a1ff21d2b55dd77976c7746b92ff572b3821b",
+    "0x887227ffeb76699888e5c7c57c02c6517bf22d09cf60f190f99a94e6d06b9f18",
+    "0x882ee652679aa9fc9076c5c4b44b477b8cd3093da6ad67a9134335c21b21fca5",
+    "0x3a6bf0b5de862290dc3131a01f6586df9e24278f6999fae023a4553bcc97bb1f",
+    "0xe07ee85e3f7cae4dd4d0808cd8124c4a3324f421758bec0821dbed5e9f6ade88",
+    "0x8b68c367a51d4514cebd458e15a91ade6405f3b25705e1ff732ea9dd16ad8775"
+  ],
+  "receipts": [
+    {
+      "hash": "0x237c20a99ef97094458a43ad7a633a0d786241ce47ac4c9d5fe34c6defbac3b1",
+      "status": "0x1",
+      "gasUsed": "0x3c6ad",
+      "gasLimit": "0x8746a"
+    },
+    {
+      "hash": "0xa554043effc8de46b7cea3f56c94e2302a67025463d92440eceffeef0554fb79",
+      "status": "0x1",
+      "gasUsed": "0xb35f",
+      "gasLimit": "0x2458e"
+    },
+    {
+      "hash": "0xd9e7f589a274099d89ebfdec73f71fe21b6957c3996820df6771fd08c0897754",
+      "status": "0x1",
+      "gasUsed": "0xba16",
+      "gasLimit": "0x24fa1"
+    },
+    {
+      "hash": "0xe7688ccd650c6d0df81500f9d3e68d34b104f7228f85486e65523f9cfb7b8758",
+      "status": "0x1",
+      "gasUsed": "0x3138f",
+      "gasLimit": "0x69e43"
+    },
+    {
+      "hash": "0xc24e4d55ea44c80dcd5abfd40249b80381f9efd834ffbacf5c68f449e331412c",
+      "status": "0x1",
+      "gasUsed": "0xb3a7",
+      "gasLimit": "0x245fa"
+    },
+    {
+      "hash": "0x18862065134de9b50aac414c9c11493025e8e2740309fb618345c4296d67c5c8",
+      "status": "0x1",
+      "gasUsed": "0x26669",
+      "gasLimit": "0x56fbd"
+    },
+    {
+      "hash": "0xb77c8a25ba917aaa6306e9bc316efeba41c8ba730901b672f560d7eb11002aef",
+      "status": "0x1",
+      "gasUsed": "0xb3a7",
+      "gasLimit": "0x245fa"
+    },
+    {
+      "hash": "0x4bba702a5cf628252d6958fc2f7e08bba518e2d80b1930c53f40cc7bd94e4a28",
+      "status": "0x1",
+      "gasUsed": "0x243b2",
+      "gasLimit": "0x53baa"
+    },
+    {
+      "hash": "0xb39c0ddda353a94d62cffa75e35a1ff21d2b55dd77976c7746b92ff572b3821b",
+      "status": "0x1",
+      "gasUsed": "0x3b5c7",
+      "gasLimit": "0x83a35"
+    },
+    {
+      "hash": "0x887227ffeb76699888e5c7c57c02c6517bf22d09cf60f190f99a94e6d06b9f18",
+      "status": "0x1",
+      "gasUsed": "0xbfe5",
+      "gasLimit": "0x25857"
+    },
+    {
+      "hash": "0x882ee652679aa9fc9076c5c4b44b477b8cd3093da6ad67a9134335c21b21fca5",
+      "status": "0x1",
+      "gasUsed": "0x39045",
+      "gasLimit": "0x7bb22"
+    },
+    {
+      "hash": "0x3a6bf0b5de862290dc3131a01f6586df9e24278f6999fae023a4553bcc97bb1f",
+      "status": "0x1",
+      "gasUsed": "0xb3a7",
+      "gasLimit": "0x245fa"
+    },
+    {
+      "hash": "0xe07ee85e3f7cae4dd4d0808cd8124c4a3324f421758bec0821dbed5e9f6ade88",
+      "status": "0x1",
+      "gasUsed": "0x1d468",
+      "gasLimit": "0x4b3a2"
+    },
+    {
+      "hash": "0x8b68c367a51d4514cebd458e15a91ade6405f3b25705e1ff732ea9dd16ad8775",
+      "status": "0x1",
+      "gasUsed": "0x4146c",
+      "gasLimit": "0x8d239"
+    }
+  ],
+  "screenshots": [
+    "artifacts/desktop-home.png",
+    "artifacts/mobile-home.png",
+    "artifacts/mobile-trade-review.png",
+    "artifacts/desktop-trade.png",
+    "artifacts/desktop-my-pepes.png",
+    "artifacts/desktop-auction.png",
+    "artifacts/mobile-auction.png",
+    "artifacts/desktop-stats.png"
+  ],
+  "limitations": [
+    "Injected provider is an Anvil-backed EIP-6963 test provider, not a MetaMask/Rabby extension.",
+    "Time and ETH balances are changed only on the local fork. No mainnet writes or contract deployments."
+  ],
+  "consoleErrors": [],
+  "forkBlock": 26147577,
+  "account": "0x86557F89EA1DbBe97D5EbE9067ecE99f63D75609",
+  "accessibility": {
+    "violations": [],
+    "incomplete": [
+      "aria-prohibited-attr",
+      "color-contrast"
+    ]
+  },
+  "rendered": {
+    "fonts": {
+      "body": true,
+      "pixel": true
+    },
+    "contrast": [
+      {
+        "name": "body",
+        "selector": "body",
+        "foreground": "rgb(238, 242, 232)",
+        "background": "rgb(11, 14, 11)",
+        "ratio": 17.101314635606624
+      },
+      {
+        "name": "hero description",
+        "selector": ".hero-copy>p",
+        "foreground": "rgb(160, 174, 152)",
+        "background": "rgb(11, 14, 11)",
+        "ratio": 8.321220076047162
+      },
+      {
+        "name": "primary button",
+        "selector": ".primary",
+        "foreground": "rgb(20, 32, 14)",
+        "background": "rgb(180, 240, 120)",
+        "ratio": 12.614491361732847
+      },
+      {
+        "name": "metric label",
+        "selector": ".stat .eyebrow",
+        "foreground": "rgb(160, 174, 152)",
+        "background": "rgb(11, 14, 11)",
+        "ratio": 8.321220076047162
+      }
+    ]
+  },
+  "finalBlock": 26147594
+}
