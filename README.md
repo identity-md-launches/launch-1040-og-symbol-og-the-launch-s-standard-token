@@ -1,14 +1,12 @@
 # OG / Swarm Pepe — live launch website
 
-The static React/TypeScript site is in `web/`; the finished production export is in **`dist/`**. It connects to launch #1040 on Ethereum mainnet. No contract was deployed, replaced or changed by this website task.
+The existing OG site is repaired in `web/`, with the complete static export in **`dist/`**. It retains the six OG pages, pixel-art design, copy, contract addresses, hook/pool fee information and Ethereum verification links. The removed route redirects to Home. No contracts or on-chain state were changed.
 
-**Paper addition:** open `#/paper` for the holder check, research calculator, public route preview, seven launch steps and risk guide. Trading stays disabled until official Papertrade deployment and relayer integration are verified. Existing OG pages and transaction logic are preserved. See [Paper validation](docs/paper-validation.md), [launch integration](docs/paper-launch.md), and [DESIGN.md](DESIGN.md).
-
-**Publication status:** the complete export is ready for site label **`og`**, the existing `og.site.identitymd.eth` site named by the supplied project record. This task does not publish a new hosted version: no IMD publisher or installed `build-website` skill is available. Publish the delivered `dist/` as its next version.
+The publisher should update the existing **`og`** label, serving **og.sites.imd.fun** and **og.site.identitymd.eth**. This assignment delivers the export; the network publishes it after review. No publishing command was run.
 
 ## Install, preview and rebuild
 
-Use Node 22.12+ (checked with Node 24.21.0). From the repository root:
+Use Node 22.12 or newer and the existing lockfile:
 
 ```sh
 npm ci --prefix web
@@ -17,66 +15,70 @@ npm run build --prefix web
 npm run preview --prefix web -- --host 127.0.0.1 --port 4173
 ```
 
-Open `http://127.0.0.1:4173/`. Stop preview with Ctrl+C. For source development use `npm run dev --prefix web`. All frontend manifests/configuration and the lockfile live under `web/`; existing Foundry configuration/dependencies are unchanged. `dist/` includes the complete static runtime, fonts, font licenses, and locally bundled on-chain hero artwork. Vite uses `base: './'`; all seven pages use hash routing. The publisher serves these files and does not rebuild them. No API key, WalletConnect service, backend or environment file is required.
+Open `http://127.0.0.1:4173/`. For source development, run `npm run dev --prefix web`. All frontend configuration and the unchanged package manifest/lockfile are under `web/`. Vite builds with `base: './'` into repository-root `dist/`. Routes are hash links, so static hosts need no rewrites. Fonts, font licenses, collection artwork, favicon and social image are bundled locally. No API key, backend, environment file or WalletConnect service is needed.
 
-## Publish on IMD
-
-Publish the **contents of repository-root `dist/`**, with `index.html` at the site root, using the IMD site label **`og`** for this existing project. Include the `assets/` and `licenses/` directories, `favicon.svg`, and the three `pepe-*.svg` files. Hash routes require no rewrite rules and relative asset URLs also work at a gateway subpath. Use HTTPS for the public wallet-facing site.
-
-This environment provides no IMD publish method or hosting credential. The source and export are delivered for the assignment's publisher; publication and checking the new hosted version remain external steps. Preserve the existing site label/name; do not create a replacement OG deployment.
-
-## Contract integration
-
-The token/hook and Uniswap infrastructure addresses originate in the supplied deployment/network records, copied to `web/src/deployment.json`. The distributor, auction and collection are discovered through the live hook/distributor getters, and the verified relationships and runtime hashes are retained in `web/src/verified.json`. The unrelated manifest MerkleDistributor is not used. Token and hook ABI hashes match the supplied canonical hashes; all four app ABIs match accepted source compilation.
-
-Home reads price in ETH from the pool state, market cap from unburned supply × spot price, total burned, confirmed ETH exit payouts and launch decay. Trade uses the provided v4 Quoter and Universal Router, includes hook fees in quotes, displays hook/pool percentages separately and protects output with slippage and a deadline. Sell approvals use the supplied Permit2; all generated allowances are exact amounts, never unlimited. Native input left over at the router is swept back to the connected account.
-
-My Pepes loads wallet ownership and on-chain tokenURI art, levels, weights, pending ETH and current backlog earnings per hour. OG activation/upgrades burn the exact difference; ETH activation buys the exact burn amount with a maximum budget and refund. Exits require the chain-exposed lock and a per-NFT approval, clearly surrender the NFT, and pay pending ETH. Auctions are paged at one block; prices tick as labeled estimates and are reread before signing. All event totals and the leaderboard are reconstructed from the deployment block, with overlapping rescans for recent reorgs.
-
-Only injected EIP-6963 wallets and the legacy injected provider are supported. The site checks chain 1, offers a switch, checks deployed code before writes, previews every approval/action before opening the wallet, simulates each step, and links receipts to Etherscan. Rejected calls/errors stay visible. Screenshots and the fork test use an injected Anvil provider; real MetaMask/Rabby popup testing remains unperformed.
-
-Numeric contract values (fees, prices, pool key, decimals, supply, level costs/weights, locks and auction parameters) are read from chain. Static numbers in the app are interface/protocol settings such as slippage policy, pagination, router opcodes and the v4 TickMath lower bound. They are not substituted contract state. There is no test RPC switch or test key in the production site.
-
-## Paper validation and reproduction (this revision)
-
-The production build, separate typecheck, report-arithmetic/state/launch-gate checks and Chromium interactions passed. The browser exercised the production export under `/preview/`, checked widths 1440/1024/768/430/390/320, live holder/route reads, all seven steps, input errors, queue and tail scenarios, disabled actions, wallet disconnect and keyboard focus. A scoped axe scan found zero violations (23 passing rules, one manual-review item). A reproduced 200% text-enlargement overflow was fixed and rechecked. There were no JavaScript page errors or failed static assets. Actual results, six-domain findings and remaining limits are in [docs/paper-validation.md](docs/paper-validation.md), [browser results](docs/paper-browser-results.json) and [unit results](docs/paper-unit-results.txt).
-
-After installing the unchanged locked dependencies above:
+For this restricted run the locked dependencies were installed only in the disposable `test/scratch/build/` copy; the delivered source has no `node_modules/`. Actual build commands were:
 
 ```sh
-cd web
-npx --no-install tsx scripts/paper-check.ts
-# Requires Chromium. PAPER_CHROME may specify an installed executable.
-node scripts/paper-browser-check.mjs ../dist ../artifacts
+npm ci --prefix test/scratch/build --cache /tmp/og-npm-cache --no-audit --no-fund
+npm run typecheck --prefix test/scratch/build
+npm run build --prefix test/scratch/build -- --outDir ../../../dist
 ```
 
-The browser harness owns and closes a temporary local static server and headless browser. It reads public chain data and injects a **read-only fixture** for the discovered owner of Pepe #1; it implements no signing or transaction method. Real wallet-extension popups, native zoom, screen readers and physical phones remain untested. CCTP's on-chain minimum fee was unavailable in the executed read; the UI says so. Papertrade live metrics, end-to-end route minima, relayer execution and exact contract mint/liquidation behavior cannot be tested before official publication.
+The copy contains the exact current `web/` source and unchanged configuration/lockfile. The ordinary commands above produce the same export. Do not add dependency folders, caches, npm archives, test scratch files or source maps to the submission. No ignore file, build configuration, dependency or contract was edited.
 
-For this restricted contributor run, dependencies were installed under the disposable `test/scratch/build/` copy using the exact existing manifest/lockfile; no `node_modules/` was created in delivered source. Actual build commands were `npm run typecheck --prefix test/scratch/build` and `npm run build --prefix test/scratch/build -- --outDir ../../../dist`. The standard `web/` commands above produce the same export with the unchanged Vite config. No dependency or ignore-file change was made. Do not submit dependency/cache folders, npm archives or source maps. See the [export and bundle integrity check](docs/paper-integrity-results.json).
+## Publish the existing site
 
-## Earlier OG validation and reproduction (prior delivery)
+Publish the **contents of `dist/`** as the next version of site label **`og`**, retaining the existing hostname/name. Include `assets/`, `licenses/`, `favicon.svg`, `social.png` and all three `pepe-*.svg` files. The publisher serves the committed export and does not rebuild. Keep HTTPS enabled for injected wallets. Relative runtime assets work at a gateway subpath; the social metadata references `https://og.sites.imd.fun/social.png` so link previews have an absolute image URL.
 
-The production build and separate TypeScript check passed. Direct-mainnet interaction validation passed at block 26147636. The final browser/mainnet-fork run passed buy, sell, OG and ETH activation, OG and ETH upgrades, locked/unlocked exit and auction purchase, with **14 successful transaction receipts** against the live addresses. No mainnet transaction was sent. All six pages passed overflow checks at 768, 390 and 320px; desktop and populated transaction states were inspected. See [site-fork-validation.json](docs/site-fork-validation.json) and [the six-domain review](docs/site-validation.md).
+## What was broken and what changed
+
+The previous shared client used only PublicNode. Browser probes reproduced HTTP 403 on historical `eth_getLogs`, with an archive-token requirement. Startup also awaited runtime verification, then one all-or-nothing state read, then a sequential history scan. One failing read delayed unrelated data. History lived only in memory, failures discarded useful progress, and the leaderboard initially displayed a misleading zero. Per-NFT reads could be repeatedly cancelled by block refreshes.
+
+`web/src/rpc.ts` now uses these public, CORS-tested Ethereum endpoints in order:
+
+1. `https://rpc.mevblocker.io`
+2. `https://eth.drpc.org`
+3. `https://eth-mainnet.public.blastapi.io`
+
+All three answered browser mainnet chain, block, token-decimal and deployment-log probes from the existing site origin. MEV Blocker accepted 500-block history queries; dRPC and Blast accepted 10-block queries. Larger requests to those backups were restricted. Other tested endpoints failed CORS, rate limits, archive access or read-method support and were excluded. Full actual probe results are in [docs/rpc-browser-probes.json](docs/rpc-browser-probes.json). Public services can change their limits.
+
+When an Ethereum wallet is connected, its provider is tried first. Wrong-network and disconnected wallets use public reads. Requests have six-second timeouts, automatic provider rotation, two bounded rounds with backoff/jitter, endpoint cooldowns and a six-request concurrency limit. Identical concurrent requests are shared. Signing and writes stay in the selected wallet; the public read transport rejects them.
+
+`web/src/history.ts` indexes the hook/distributor/auction from their deployment block **26,147,432**. It starts at 500 blocks, grows to at most 1,000, shrinks failed range/timeout queries down to single blocks when necessary, and runs at most three ranges concurrently. Only successful contiguous ranges advance the checkpoint. The versioned localStorage cache includes decoded application events, their blocks and a checkpoint block hash. Reload checks that hash; each sync replaces the last 32 blocks to handle recent reorgs. Broken ranges remain incomplete, partial totals are labelled, and full/disabled storage falls back to in-memory reads. Only events used by the site are stored.
+
+State fields, history and runtime verification load independently. A failed card shows a small Retry control and retries in the background. Previous successful values and rows remain visible. Home/Stats publish each field as it arrives; the leaderboard reads its population from chain instead of assuming zero. NFT reward rows publish individually and poll after the previous batch finishes, so an advancing block cannot starve a slow batch.
+
+My Pepes shows Connect immediately. Ownership uses enumeration when available and a bounded ERC721A owner scan otherwise. Cached owner IDs are candidates only: every owner is rechecked at the current block, and the scan must match `balanceOf`. Discovered IDs, levels and pending ETH appear progressively. Account changes/disconnect clear the view; errors have retry and automatic recovery. Live auctions load independently from past sales and auction-action parameters.
+
+## Validation and evidence
+
+See [docs/site-repair-validation.md](docs/site-repair-validation.md) for commands, actual results, the six-domain Better Interface review and limitations. [DESIGN.md](DESIGN.md) describes the retained design and implemented loading/retry patterns. Page screenshots are delivered in `artifacts/`.
+
+After installing the locked dependencies, run from `web/`:
 
 ```sh
-npm run test:interactions --prefix web
-# Requires Anvil and Chrome; the harness starts/stops a local fork and preview.
-OG_FORK_BLOCK=26147577 npm run test:fork --prefix web
+npx --no-install tsx scripts/read-check.ts
+mkdir -p ../artifacts
+# Supply your Ethereum read RPC as a command argument (never commit a keyed URL).
+npx --no-install tsx scripts/mainnet-check.ts YOUR_ETHEREUM_READ_RPC > ../artifacts/mainnet-check.json
+# The browser harnesses start and close their own temporary preview server.
+node scripts/browser-check.mjs ../dist ../artifacts YOUR_ETHEREUM_READ_RPC
+node scripts/recovery-check.mjs ../dist ../artifacts
+node scripts/auction-history-check.mjs ../dist ../artifacts YOUR_ETHEREUM_READ_RPC
 ```
 
-The recorded fork block makes the test reproducible with the original owner/state of token #1. It reads that actual owner, impersonates only on the local fork and changes only fork ETH/time. `OG_CHROME` can point to a Chrome/Chromium executable (default `/usr/bin/google-chrome`). The public RPC must retain that historical block. Reports and screenshots are written under `artifacts/`. The submission environment collects that directory separately; durable text results are also in `docs/`.
+`browser-check.mjs` expects `artifacts/mainnet-check.json`; redirect the mainnet check's JSON there first. Set `OG_CHROME` to an installed Chromium/headless-shell executable when the included machine default is unavailable. The public-page pass uses the production RPC list directly. The connected-wallet pass discovers a real current NFT owner and supplies a **read-only EIP-6963 fixture** through the worker's mainnet relay. It implements no signing. Failure tests inject explicit 403/429 or one-field errors and use real mainnet for successful responses.
 
-To regenerate accepted ABIs and verify deployed runtime, with the original Foundry toolchain installed:
+Runtime hashes, on-chain relationships, ABI hashes, quotes, ownership, event-derived populations and metrics were checked against Ethereum mainnet. No mainnet transaction was sent. Current auctions can correctly be empty; the observed mainnet snapshot had 139 active Pepes and 30 historical auction sales. A separate browser replay of actual mainnet block 26,159,947 rendered 21 then-active auctions with prices, floors, countdowns and the connect-to-buy interaction. This is explicitly historical evidence; current mainnet has zero live auctions. Real extension confirmation windows, a signed auction purchase, screen-reader sessions, native browser zoom and physical devices are not covered by this repair's browser checks. The earlier fork transaction record below is historical evidence, not a claim of a new transaction test.
 
-```sh
-forge build --out test/scratch/forge-out --cache-path test/scratch/forge-cache
-npm run verify:chain --prefix web
-npm run build --prefix web
-```
+## Contract integration and earlier validation
 
-`verify:chain` compares compiled ABI data, pinned token/hook ABI hashes, and runtime excluding immutable slots; it then records full live code hashes and derives the three local hero SVGs from tokenURI. The site also checks those full runtime hashes on startup. This command is not necessary for ordinary preview or rebuilding the delivered frontend.
+The token/hook and Uniswap infrastructure addresses remain from the supplied deployment/network records in `web/src/deployment.json`. Distributor, auction and collection remain discovered through the live hook/distributor getters and pinned in `web/src/verified.json`. The unrelated manifest MerkleDistributor is not used. OG and hook canonical ABI hashes match the supplied hashes; the runtime checks still gate wallet actions.
 
-Known limits: IMD publication unavailable; no physical-device/native-zoom/screen-reader session; no real extension popup test; public RPC history/ownership scans may be slow or transiently unavailable. The app makes those loading/error states visible. Market cap is ETH-denominated and labeled circulating. Backlog rate is not a forecast of future trading fees. No dependency caches, `node_modules`, source maps or npm archives belong in the Git submission. No ignore file was modified.
+Trade retains the v4 Quoter/Universal Router, separate hook and pool percentages, slippage/deadline protections, exact allowances, Permit2 sell flow and native refunds. Activation/upgrades, NFT exit consequences, auction purchase reviews, transaction simulations and receipt links remain intact. Protocol values are read from chain.
+
+The previous website delivery recorded mainnet-fork buy/sell, OG/ETH activation and upgrades, locked/unlocked exit and auction purchase with 14 successful fork receipts, at the live addresses. That earlier result is retained in [docs/site-fork-validation.json](docs/site-fork-validation.json) and [docs/site-validation.md](docs/site-validation.md). It was not re-executed for this read-layer repair. ABI regeneration remains available through `web/scripts/verify-chain.mjs` with the original Foundry toolchain; ordinary frontend rebuilds do not need it.
 
 ## Earlier contract implementation record
 

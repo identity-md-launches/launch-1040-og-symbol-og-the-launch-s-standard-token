@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "fileBytes": 3355937,
+  "fileCount": 300,
+  "budget": 8388608,
+  "checks": [
+    "Protected build configuration, dependencies and pinned addresses/ABIs unchanged",
+    "No gitlinks, dependency/cache folders, npm archives or source maps in candidate submission",
+    "Required metadata, favicon and bundled social image",
+    "Relative production assets resolve",
+    "Removed feature absent from runtime bundles",
+    "Public social PNG matches source"
+  ],
+  "sha256": {
+    "dist/index.html": "04e2df55f20fd4fa1907a7cc214f73d1ce339d968a0294620dffbdf2fc2eae3c",
+    "dist/assets/ethereum-DT568Zoo.js": "f91d4b509dd5c83bd9bc89f74b51fa947d52156f7e0ce4d460d1fa80788f3fec",
+    "dist/assets/index-B1ZiKON_.css": "2bfd13ebabd9214b40784fe401583f54716c70a9e011534fc8fca472d3262d95",
+    "dist/assets/index-DfZUCpg3.js": "c950a62bb4584d712bb7af097828636ad4f65d4f88e2cd369c409d34c363fd05",
+    "dist/assets/react-Dfoqj1Wf.js": "aa9bc3a753caf2a50613b0e80debaf799be56043a3d34ed7bb6a326bc569d26a",
+    "dist/assets/space-mono-latin-400-normal-Rg4St2Dn.woff2": "fb4a81a2d0a893e5c38c394a7e716a1cef0b24610a0af49c96f6d529bd66bf2b",
+    "dist/assets/space-mono-latin-400-normal-_3DlpgIW.woff": "d9d02a663d01b5d0a75eea2dce0ac220c0eb94aa0144f1191d0e7faff759716c",
+    "dist/assets/space-mono-latin-700-normal-D7A851RN.woff": "8cdde79ffa85d2b11cd81a8c8f8fee3708607f76acd07172150b9851723fdd0e",
+    "dist/assets/space-mono-latin-700-normal-mWgeinG7.woff2": "2d46bd159b53f55c41167a4f1540a074649464194fd1e416f5b4694a6c0f282c",
+    "dist/assets/vt323-latin-400-normal-Dqn9ZSPj.woff": "4bf46256dbaa7b6531febc80268b117fb6f71a56ccd9f859de9211b06fd5337c",
+    "dist/assets/vt323-latin-400-normal-wDgJuOC9.woff2": "8ddbebcc1048154132e1d78eb9b1f7850bca1b7d857035ccf1cb4318ebc615b6",
+    "dist/social.png": "8472da67d33fe1d98720d79ae24c0e8e1f60af929f59140e198339d625d63fe0"
+  }
+}

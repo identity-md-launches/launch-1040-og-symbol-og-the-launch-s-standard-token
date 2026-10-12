@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { type Address, type Hex, parseUnits } from "viem";
 import * as C from "./chain";
 import { useWallet, type WalletState } from "./wallet";
-import Paper from "./paper/Paper";
 import "@fontsource/vt323/latin-400.css";
 import "@fontsource/space-mono/latin-400.css";
 import "@fontsource/space-mono/latin-700.css";
@@ -15,7 +14,6 @@ const pages = [
   "Leaderboard",
   "Auctions",
   "Stats",
-  "Paper",
 ] as const;
 type Page = (typeof pages)[number];
 const slug = (p: Page) => p.toLowerCase().replace(" ", "-");
@@ -30,7 +28,7 @@ function timeLeft(seconds: bigint) {
     s = seconds % 60n;
   return `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`;
 }
-function useNow(state?: C.State) {
+function useNow(state?: Pick<C.State, "time" | "fetched">) {
   const [tick, setTick] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => setTick((x) => x + 1), 1000);
@@ -63,11 +61,15 @@ function Stat({
   value,
   unit,
   sub,
+  error,
+  retry,
 }: {
   label: string;
   value: React.ReactNode;
   unit?: string;
   sub?: string;
+  error?: string;
+  retry?: () => void;
 }) {
   return (
     <div className="stat">
@@ -76,6 +78,7 @@ function Stat({
         {value} {unit && <small>{unit}</small>}
       </strong>
       {sub && <span className="muted small">{sub}</span>}
+      {error && <ReadIssue error={error} retry={retry} compact />}
     </div>
   );
 }
@@ -99,6 +102,30 @@ function ErrorBox({ error, retry }: { error: string; retry?: () => void }) {
     <div className="error" role="alert">
       <p>{error}</p>
       {retry && <button onClick={retry}>Try again</button>}
+    </div>
+  );
+}
+function ReadIssue({
+  error,
+  retry,
+  compact = false,
+}: {
+  error: string;
+  retry?: () => void;
+  compact?: boolean;
+}) {
+  return (
+    <div className={`read-issue ${compact ? "compact" : ""}`} role="status">
+      <span>{compact ? "Update unavailable" : error} · retrying</span>
+      {retry && (
+        <button
+          className="text-button"
+          onClick={retry}
+          aria-label="Retry this data"
+        >
+          Retry
+        </button>
+      )}
     </div>
   );
 }
@@ -339,64 +366,132 @@ function App() {
   const [page, setPage] = useState<Page>(
     () => pages.find((p) => href(p) === location.hash) || "Home",
   );
-  const [state, setState] = useState<C.State>(),
+  const [state, setState] = useState<C.Snapshot>({}),
+    [stateErrors, setStateErrors] = useState<C.StateErrors>({}),
     [verified, setVerified] = useState(false),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true),
     [events, setEvents] = useState<C.Activity[]>(),
     [eventError, setEventError] = useState(""),
+    [historyComplete, setHistoryComplete] = useState(false),
+    [historyBlock, setHistoryBlock] = useState<bigint>(),
+    [verifyError, setVerifyError] = useState(""),
     [sync, setSync] = useState(""),
     [walletOpen, setWalletOpen] = useState(false),
     [walletError, setWalletError] = useState(""),
     [review, setReview] = useState<Review>(),
     [refreshId, setRefreshId] = useState(0);
   const refreshing = useRef(false);
+  const pendingStateRetries = useRef(new Set<keyof C.State>());
   const isVerified = useRef(false);
   const mainRef = useRef<HTMLElement>(null);
-  const refresh = useCallback(async () => {
-    if (refreshing.current) return;
-    refreshing.current = true;
-    setError("");
+  const refreshingEvents = useRef(false);
+  const verifying = useRef(false);
+  const refreshEvents = useCallback(async () => {
+    if (refreshingEvents.current) return;
+    refreshingEvents.current = true;
     try {
-      if (!isVerified.current) {
-        await C.verifyRuntime();
-        isVerified.current = true;
-        setVerified(true);
-      }
-      const s = await C.loadState();
-      setState(s);
-      try {
-        setEvents(await C.events(s.block, setSync));
-        setEventError("");
-      } catch (e) {
-        setEventError(
-          `Event history could not sync. ${C.errorText(e)} Retry to load totals and the leaderboard.`,
-        );
-      }
-      setSync("");
+      const block = await C.client.getBlockNumber({ cacheTime: 0 });
+      await C.events(block, setSync, (result) => {
+        setEvents(result.logs);
+        setHistoryComplete(result.complete);
+        setHistoryBlock(result.through);
+      });
+      setEventError("");
     } catch (e) {
-      setError(`Live reads unavailable. ${C.errorText(e)}`);
+      setEventError(`History update unavailable. ${C.errorText(e)}`);
+    } finally {
+      setSync("");
+      refreshingEvents.current = false;
+    }
+  }, []);
+  const refreshVerification = useCallback(async () => {
+    if (verifying.current || isVerified.current) return;
+    verifying.current = true;
+    try {
+      await C.verifyRuntime();
+      isVerified.current = true;
+      setVerified(true);
+      setVerifyError("");
+    } catch (e) {
+      setVerifyError(C.errorText(e));
+    } finally {
+      verifying.current = false;
+    }
+  }, []);
+  const refresh = useCallback(async (keys?: readonly (keyof C.State)[]) => {
+    if (refreshing.current) {
+      keys?.forEach((key) => pendingStateRetries.current.add(key));
+      return;
+    }
+    refreshing.current = true;
+    setLoading(true);
+    try {
+      await C.loadSnapshot((patch, failures) => {
+        setState((old) => ({ ...old, ...patch }));
+        setStateErrors((old) => {
+          const next = { ...old, ...failures };
+          for (const key of Object.keys(patch) as (keyof C.State)[])
+            delete next[key];
+          return next;
+        });
+      }, keys);
+      setError("");
+    } catch (e) {
+      setError(`Live data update unavailable. ${C.errorText(e)}`);
     } finally {
       setLoading(false);
       refreshing.current = false;
+      if (pendingStateRetries.current.size) {
+        const pending = [...pendingStateRetries.current];
+        pendingStateRetries.current.clear();
+        void refresh(pending);
+      }
     }
   }, []);
+  const retryState = useCallback(
+    (keys?: readonly (keyof C.State)[]) => {
+      void refresh(keys);
+    },
+    [refresh],
+  );
   useEffect(() => {
-    void refresh();
-    const timer = setInterval(() => {
-      if (!document.hidden) void refresh();
-    }, 15000);
-    return () => clearInterval(timer);
-  }, [refresh]);
+    const update = () => {
+      if (!document.hidden) {
+        void refresh();
+        void refreshEvents();
+        void refreshVerification();
+      }
+    };
+    update();
+    const timer = setInterval(update, 15000);
+    window.addEventListener("online", update);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("online", update);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, [
+    refresh,
+    refreshEvents,
+    refreshVerification,
+    wallet.account,
+    wallet.chain,
+  ]);
   useEffect(() => {
     const change = () => {
-      setPage(pages.find((p) => href(p) === location.hash) || "Home");
+      const match = pages.find((p) => href(p) === location.hash);
+      if (!match) history.replaceState(null, "", "#/home");
+      setPage(match || "Home");
       setReview(undefined);
       requestAnimationFrame(() => {
         mainRef.current?.focus();
         window.scrollTo(0, 0);
       });
     };
+    if (!pages.some((p) => href(p) === location.hash))
+      history.replaceState(null, "", "#/home");
     window.addEventListener("hashchange", change);
     return () => window.removeEventListener("hashchange", change);
   }, []);
@@ -407,7 +502,12 @@ function App() {
     document.title = `${page === "Home" ? "The original green" : page} — OG`;
   }, [page]);
   const requestReview = (r: Review) => {
-    if (!verified || error || !state || Date.now() - state.fetched > 60000)
+    if (
+      !verified ||
+      error ||
+      !state.fetched ||
+      Date.now() - state.fetched > 60000
+    )
       throw Error("Refresh live data before continuing.");
     if (wallet.chain !== 1)
       throw Error("Switch your wallet to Ethereum mainnet first.");
@@ -416,9 +516,23 @@ function App() {
   const afterWrite = () => {
     setRefreshId((x) => x + 1);
     void refresh();
+    void refreshEvents();
   };
-  const totals = events && !eventError ? C.eventTotals(events) : undefined;
-  const ready = !!state && verified && !error;
+  const totals = events ? C.eventTotals(events) : undefined;
+  const ready = !!state.block && verified && !error;
+  const tradeState = C.selectState(state, C.TRADE_FIELDS);
+  const pepeState = C.selectState(state, C.PEPE_FIELDS);
+  const auctionState = C.selectState(state, C.AUCTION_FIELDS);
+  const fieldsReady = (keys: readonly (keyof C.State)[]) =>
+    ready && !keys.some((k) => !!stateErrors[k]);
+  const historyIssue =
+    eventError ||
+    (!historyComplete
+      ? historyBlock
+        ? `Partial history through block ${historyBlock.toLocaleString()}`
+        : "Loading history…"
+      : "");
+
   return (
     <>
       <a
@@ -463,20 +577,30 @@ function App() {
           <span>
             {error
               ? "Connection interrupted"
-              : state
+              : state.block
                 ? `Mainnet · block ${state.block.toLocaleString()}`
-                : "Connecting to Ethereum…"}
+                : "Ethereum mainnet · loading live data"}
           </span>
           <button
             className="text-button"
             disabled={loading}
-            onClick={() => void refresh()}
+            onClick={() => {
+              void refresh();
+              void refreshEvents();
+              void refreshVerification();
+            }}
             aria-label="Refresh live data"
           >
             Refresh ↻
           </button>
         </div>
-        {error && <ErrorBox error={error} retry={() => void refresh()} />}{" "}
+        {error && <ReadIssue error={error} retry={() => retryState()} />}
+        {verifyError && (
+          <ReadIssue
+            error="Contract checks unavailable. Wallet actions will unlock after verification."
+            retry={() => void refreshVerification()}
+          />
+        )}
         {wallet.account && wallet.chain !== 1 && (
           <div className="warning">
             <p>
@@ -494,26 +618,51 @@ function App() {
             {walletError && <p role="alert">{walletError}</p>}
           </div>
         )}
-        {page === "Paper" && <Paper wallet={wallet} connect={() => setWalletOpen(true)} />}
         {page === "Home" && (
-          <Home state={state} totals={totals} eventError={eventError} />
+          <Home
+            state={state}
+            totals={totals}
+            eventError={historyIssue}
+            stateErrors={stateErrors}
+            retry={retryState}
+            retryEvents={() => void refreshEvents()}
+          />
         )}
+        {page === "Trade" && C.TRADE_FIELDS.some((k) => !!stateErrors[k]) && (
+          <ReadIssue
+            error="Some pool details could not update."
+            retry={() => retryState(C.TRADE_FIELDS)}
+          />
+        )}
+        {page === "My Pepes" && C.PEPE_FIELDS.some((k) => !!stateErrors[k]) && (
+          <ReadIssue
+            error="Some activation details could not update. Your Pepes still load below."
+            retry={() => retryState(C.PEPE_FIELDS)}
+          />
+        )}
+        {page === "Auctions" &&
+          C.AUCTION_FIELDS.some((k) => !!stateErrors[k]) && (
+            <ReadIssue
+              error="Some auction details could not update."
+              retry={() => retryState(C.AUCTION_FIELDS)}
+            />
+          )}
         {page === "Trade" && (
           <Trade
-            state={state}
+            state={tradeState}
             wallet={wallet}
             review={requestReview}
             connect={() => setWalletOpen(true)}
-            ready={ready}
+            ready={fieldsReady(C.TRADE_FIELDS)}
           />
         )}
         {page === "My Pepes" && (
           <MyPepes
-            state={state}
+            state={pepeState}
             wallet={wallet}
             review={requestReview}
             connect={() => setWalletOpen(true)}
-            ready={ready}
+            ready={fieldsReady(C.PEPE_FIELDS)}
             refreshId={refreshId}
           />
         )}
@@ -521,28 +670,34 @@ function App() {
           <Leaderboard
             state={state}
             events={events}
-            error={eventError}
-            retry={() => void refresh()}
+            error={historyIssue}
+            retry={() => {
+              void refreshEvents();
+              retryState();
+            }}
           />
         )}
         {page === "Auctions" && (
           <Auctions
-            state={state}
+            state={auctionState}
             wallet={wallet}
             review={requestReview}
             connect={() => setWalletOpen(true)}
-            ready={ready}
+            ready={fieldsReady(C.AUCTION_FIELDS)}
             events={events}
-            eventError={eventError}
+            eventError={historyIssue}
+            retryEvents={() => void refreshEvents()}
           />
         )}
         {page === "Stats" && (
           <Stats
             state={state}
             events={events}
-            error={eventError}
+            error={historyIssue}
             sync={sync}
-            retry={() => void refresh()}
+            retry={() => void refreshEvents()}
+            stateErrors={stateErrors}
+            retryState={retryState}
           />
         )}
       </main>
@@ -665,14 +820,26 @@ function Home({
   state: s,
   totals,
   eventError,
+  stateErrors,
+  retry,
+  retryEvents,
 }: {
-  state?: C.State;
+  state: C.Snapshot;
   totals?: ReturnType<typeof C.eventTotals>;
   eventError: string;
+  stateErrors: C.StateErrors;
+  retry: (keys?: readonly (keyof C.State)[]) => void;
+  retryEvents: () => void;
 }) {
-  const price = s ? C.spotPrice(s) : undefined;
+  const price =
+    s.sqrt !== undefined && s.decimals !== undefined
+      ? C.spotPrice({ sqrt: s.sqrt, decimals: s.decimals })
+      : undefined;
   const cap =
-    s && price
+    s.supply !== undefined &&
+    s.burned !== undefined &&
+    price !== undefined &&
+    s.decimals !== undefined
       ? Number(C.exact(s.supply - s.burned, s.decimals)) * price
       : undefined;
   return (
@@ -728,12 +895,16 @@ function Home({
       <section className="stats-strip" aria-label="Live token metrics">
         <Stat
           label="OG price"
+          error={stateErrors.sqrt || stateErrors.decimals}
+          retry={() => retry(["pool", "decimals"])}
           value={price?.toPrecision(5) ?? "—"}
           unit="ETH"
           sub="Pool spot price · before fees"
         />
         <Stat
           label="Circulating market cap"
+          error={stateErrors.supply || stateErrors.burned || stateErrors.sqrt}
+          retry={() => retry(["supply", "burned", "pool"])}
           value={
             cap?.toLocaleString("en-US", { maximumFractionDigits: 3 }) ?? "—"
           }
@@ -742,29 +913,36 @@ function Home({
         />
         <Stat
           label="OG burned"
+          error={stateErrors.burned}
+          retry={() => retry(["burned"])}
           value={C.fmt(s?.burned, s?.decimals, 0)}
           unit="OG"
           sub="Permanently sent to burn address"
         />
         <Stat
           label="Paid to holders"
+          error={
+            eventError && !eventError.startsWith("Loading")
+              ? eventError
+              : undefined
+          }
+          retry={retryEvents}
           value={C.fmt(totals?.paid)}
           unit="ETH"
-          sub={
-            eventError
-              ? "Event history unavailable"
-              : "Sum of confirmed exit payouts"
-          }
+          sub={eventError ? eventError : "Sum of confirmed exit payouts"}
         />
       </section>
       <div className="launch-bar">
         <span className="tag">Launch monitor</span>
         <span>
           Buy hook fee{" "}
-          <strong>{s ? `${C.fmt(s.launchFee, 16, 6)}%` : "—"}</strong>
+          <strong>
+            {s.launchFee !== undefined ? `${C.fmt(s.launchFee, 16, 6)}%` : "—"}
+          </strong>
         </span>
         <span>
-          Decay remaining <strong>{s ? `${s.decay} min` : "—"}</strong>
+          Decay remaining{" "}
+          <strong>{s.decay !== undefined ? `${s.decay} min` : "—"}</strong>
         </span>
         <a href={href("Stats")}>View live stats ↗</a>
       </div>
@@ -832,10 +1010,10 @@ function Home({
               </span>
               <span className="eyebrow">Level {l}</span>
               <strong>
-                {s ? String(s.weights[i]) : "—"}
+                {s ? String(s.weights?.[i] ?? "—") : "—"}
                 <small>× weight</small>
               </strong>
-              <span>{C.fmt(s?.costs[i], s?.decimals, 0)} OG</span>
+              <span>{C.fmt(s?.costs?.[i], s?.decimals, 0)} OG</span>
               <span className="muted small">Cumulative burn</span>
             </article>
           ))}
@@ -845,7 +1023,8 @@ function Home({
         <span aria-hidden="true">↗</span>
         <p>
           <strong>Know your exit.</strong> Rewards are collected by handing in
-          the NFT, after a {s ? C.fmt(s.lock / 3600n, 0, 0) : "—"}-hour lock
+          the NFT, after a{" "}
+          {s.lock !== undefined ? C.fmt(s.lock / 3600n, 0, 0) : "—"}-hour lock
           from your last activation or upgrade. Your NFT moves to auction. You
           no longer own it.
         </p>
@@ -853,8 +1032,8 @@ function Home({
     </>
   );
 }
-type ActionProps = {
-  state?: C.State;
+type ActionProps<S = C.TradeState> = {
+  state?: S;
   wallet: WalletState;
   review: (r: Review) => void;
   connect: () => void;
@@ -919,7 +1098,7 @@ function Trade({ state: s, wallet, review, connect, ready }: ActionProps) {
     setBusy(true);
     setQuoted(undefined);
     try {
-      if (!s || !ready) throw Error("Wait for live pool data, then try again.");
+      if (!s) throw Error("Wait for live pool data, then try again.");
       let n: bigint, bps: bigint;
       try {
         n = C.amount(input, buy ? 18 : s.decimals);
@@ -1084,7 +1263,7 @@ function Trade({ state: s, wallet, review, connect, ready }: ActionProps) {
             <div id="trade-error">{error && <ErrorBox error={error} />}</div>
             <button
               className={quoted ? "wide" : "primary wide"}
-              disabled={busy || !ready}
+              disabled={busy || !s}
             >
               {busy ? "Getting quote…" : quoted ? "Refresh quote" : "Get quote"}
             </button>
@@ -1143,7 +1322,7 @@ function Trade({ state: s, wallet, review, connect, ready }: ActionProps) {
     </>
   );
 }
-function FeeRows({ s, buy }: { s: C.State; buy: boolean }) {
+function FeeRows({ s, buy }: { s: C.TradeState; buy: boolean }) {
   return (
     <dl className="fee-rows">
       <div>
@@ -1159,16 +1338,23 @@ function FeeRows({ s, buy }: { s: C.State; buy: boolean }) {
 }
 function NftImage({ id }: { id: bigint }) {
   const [data, setData] = useState<{ image?: string; name?: string }>(),
-    [failed, setFailed] = useState(false);
+    [failed, setFailed] = useState(false),
+    [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
+    setFailed(false);
     C.metadata(id)
       .then((m) => active && setData(m))
       .catch(() => active && setFailed(true));
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, attempt]);
+  useEffect(() => {
+    if (!failed) return;
+    const timer = setTimeout(() => setAttempt((x) => x + 1), 30000);
+    return () => clearTimeout(timer);
+  }, [failed]);
   return (
     <div className="nft-image">
       {data?.image && !failed ? (
@@ -1184,10 +1370,70 @@ function NftImage({ id }: { id: bigint }) {
           <span>
             {failed ? "Artwork unavailable" : "Loading on-chain art…"}
           </span>
+          {failed && (
+            <button
+              className="text-button"
+              onClick={() => setAttempt((x) => x + 1)}
+            >
+              Retry artwork
+            </button>
+          )}
         </div>
       )}
     </div>
   );
+}
+// Keep publishing successful rows even if another NFT is slow or fails. Poll after a
+// completed batch so a changing block number cannot repeatedly cancel a long scan.
+function usePepeRows(ids: bigint[], block?: bigint) {
+  const [items, setItems] = useState<C.Pepe[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const [revision, setRevision] = useState(0);
+  const latestBlock = useRef(block);
+  latestBlock.current = block;
+  const key = [...ids]
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(String)
+    .join(",");
+  useEffect(() => {
+    let active = true;
+    let timer: ReturnType<typeof setTimeout>;
+    const currentIds = key ? key.split(",").map(BigInt) : [];
+    setItems((old) => old.filter((p) => currentIds.includes(p.id)));
+    setErrors({});
+    const run = async () => {
+      if (!active) return;
+      setLoading(true);
+      const result = await C.pepeResults(
+        currentIds,
+        latestBlock.current,
+        (p) => {
+          if (active)
+            setItems((old) =>
+              [...old.filter((v) => v.id !== p.id), p].sort((a, b) =>
+                a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
+              ),
+            );
+        },
+      );
+      if (!active) return;
+      setErrors(
+        Object.fromEntries(result.errors.map((e) => [String(e.id), e.error])),
+      );
+      setLoading(false);
+      timer = setTimeout(() => {
+        if (document.hidden) timer = setTimeout(run, 15000);
+        else void run();
+      }, 15000);
+    };
+    void run();
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [key, revision]);
+  return { items, errors, loading, retry: () => setRevision((x) => x + 1) };
 }
 function MyPepes({
   state: s,
@@ -1196,53 +1442,66 @@ function MyPepes({
   connect,
   ready,
   refreshId,
-}: ActionProps & { refreshId: number }) {
+}: ActionProps<C.PepeState> & { refreshId: number }) {
   const [ids, setIds] = useState<bigint[]>([]),
-    [items, setItems] = useState<C.Pepe[]>([]),
     [progress, setProgress] = useState(""),
     [error, setError] = useState(""),
     [manual, setManual] = useState(""),
     [loadId, setLoadId] = useState(0);
+  const {
+    items,
+    errors: itemErrors,
+    loading: detailsLoading,
+    retry: retryDetails,
+  } = usePepeRows(ids, s?.block);
+  const accountRef = useRef(wallet.account);
+  accountRef.current = wallet.account;
+  useEffect(() => {
+    setIds([]);
+    setProgress("");
+    setError("");
+  }, [wallet.account]);
   useEffect(() => {
     let active = true;
-    setIds([]);
-    setItems([]);
-    setError("");
-    if (wallet.account) {
+    let retryTimer: ReturnType<typeof setTimeout>;
+    if (!wallet.account) return;
+    const run = async () => {
+      if (!active) return;
       setProgress("Finding your Pepes…");
-      C.owned(wallet.account, (p) => active && setProgress(p))
-        .then((v) => {
-          if (active) {
-            setIds(v);
-            setProgress("");
-          }
-        })
-        .catch((e) => {
-          if (active) {
-            setError(C.errorText(e));
-            setProgress("");
-          }
-        });
-    }
+      const found = (v: bigint[]) => {
+        if (active) setIds((old) => (old.join() === v.join() ? old : v));
+      };
+      try {
+        const v = await C.owned(
+          wallet.account!,
+          (p) => active && setProgress(p),
+          found,
+        );
+        if (active) {
+          found(v);
+          setError("");
+        }
+      } catch (e) {
+        if (active) setError(C.errorText(e));
+      } finally {
+        if (active) {
+          setProgress("");
+          retryTimer = setTimeout(run, 30000);
+        }
+      }
+    };
+    void run();
     return () => {
       active = false;
+      clearTimeout(retryTimer);
     };
   }, [wallet.account, refreshId, loadId]);
-  useEffect(() => {
-    let active = true;
-    if (ids.length && s)
-      C.pepes(ids, s.block)
-        .then((p) => active && setItems(p))
-        .catch((e) => active && setError(C.errorText(e)));
-    return () => {
-      active = false;
-    };
-  }, [ids, s?.block]);
   const loadToken = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
       if (!wallet.account) throw Error("Connect first.");
+      const account = wallet.account;
       if (!/^\d+$/.test(manual)) throw Error("Enter a whole token ID.");
       const id = BigInt(manual);
       if (
@@ -1252,7 +1511,8 @@ function MyPepes({
         throw Error(
           "This wallet does not own that Pepe. Try another token ID.",
         );
-      setIds((old) => (old.includes(id) ? old : [...old, id]));
+      if (accountRef.current === account)
+        setIds((old) => (old.includes(id) ? old : [...old, id]));
     } catch (e) {
       setError(C.errorText(e));
     }
@@ -1274,7 +1534,10 @@ function MyPepes({
         <>
           <div className="collection-toolbar">
             <span role="status">
-              {progress || `${items.length} Pepes loaded`}
+              {progress ||
+                (detailsLoading
+                  ? `Loading levels and rewards · ${items.length} / ${ids.length}`
+                  : `${items.length} Pepes loaded`)}
             </span>
             <button
               onClick={() => setLoadId((x) => x + 1)}
@@ -1301,10 +1564,12 @@ function MyPepes({
               chain.
             </p>
           </details>
-          {error && <ErrorBox error={error} />}
+          {error && (
+            <ReadIssue error={error} retry={() => setLoadId((x) => x + 1)} />
+          )}
           <div className="nft-grid">
-            {s &&
-              items.map((p) => (
+            {items.map((p) =>
+              s ? (
                 <PepeCard
                   key={p.id.toString()}
                   pepe={p}
@@ -1312,11 +1577,38 @@ function MyPepes({
                   wallet={wallet}
                   review={review}
                   connect={connect}
-                  ready={ready}
+                  ready={ready && !itemErrors[String(p.id)]}
+                  readError={itemErrors[String(p.id)]}
+                  retryRead={retryDetails}
                 />
+              ) : (
+                <article className="nft-card" key={String(p.id)}>
+                  <NftImage id={p.id} />
+                  <div className="nft-body">
+                    <h2>Pepe #{String(p.id)}</h2>
+                    <p>
+                      Level {p.level} · {String(p.weight)}× weight
+                    </p>
+                    <p>{C.fmt(p.pending)} ETH pending</p>
+                    <p className="small muted">
+                      Activation controls are loading.
+                    </p>
+                  </div>
+                </article>
+              ),
+            )}
+            {Object.entries(itemErrors)
+              .filter(([id]) => !items.some((p) => String(p.id) === id))
+              .map(([id, message]) => (
+                <article className="nft-card" key={`error-${id}`}>
+                  <div className="nft-body">
+                    <h2>Pepe #{id}</h2>
+                    <ReadIssue error={message} retry={retryDetails} />
+                  </div>
+                </article>
               ))}
           </div>
-          {!progress && !items.length && !error && (
+          {!progress && !detailsLoading && !ids.length && !error && (
             <Empty title="No Swarm Pepes found.">
               Find a Pepe on{" "}
               <Link
@@ -1343,7 +1635,14 @@ function PepeCard({
   wallet,
   review,
   ready,
-}: ActionProps & { pepe: C.Pepe; state: C.State }) {
+  readError,
+  retryRead,
+}: ActionProps<C.PepeState> & {
+  pepe: C.Pepe;
+  state: C.PepeState;
+  readError?: string;
+  retryRead?: () => void;
+}) {
   const [target, setTarget] = useState(Math.min(3, p.level + 1)),
     [payment, setPayment] = useState("OG"),
     [slip, setSlip] = useState("1"),
@@ -1514,6 +1813,7 @@ function PepeCard({
             L{p.level} · {p.weight.toString()}×
           </span>
         </div>
+        {readError && <ReadIssue error={readError} retry={retryRead} compact />}
         <dl className="fee-rows">
           <div>
             <dt>Pending ETH</dt>
@@ -1616,36 +1916,32 @@ function Leaderboard({
   error,
   retry,
 }: {
-  state?: C.State;
+  state: C.Snapshot;
   events?: C.Activity[];
   error: string;
   retry: () => void;
 }) {
-  const [items, setItems] = useState<C.Pepe[]>([]),
-    [filter, setFilter] = useState("all"),
-    [sort, setSort] = useState("pending"),
-    [localError, setLocalError] = useState(""),
-    [loading, setLoading] = useState(true);
-  useEffect(() => {
-    let active = true;
-    if (events && s) {
-      setLoading(true);
-      C.pepes(C.eventTotals(events).ids, s.block)
-        .then((p) => {
-          if (active) {
-            setItems(p.filter((v) => v.level > 0));
-            setLocalError("");
-          }
-        })
-        .catch((e) => active && setLocalError(C.errorText(e)))
-        .finally(() => active && setLoading(false));
-    }
-    return () => {
-      active = false;
-    };
-  }, [events, s?.block]);
+  const [filter, setFilter] = useState("all"),
+    [sort, setSort] = useState("pending");
+  const {
+    items,
+    errors: rowErrors,
+    loading,
+    retry: retryRows,
+  } = usePepeRows(events ? C.eventTotals(events).ids : [], s.block);
+  const localError = Object.keys(rowErrors).length
+    ? `${Object.keys(rowErrors).length} Pepe rows could not update.`
+    : "";
+  const activeCount = s.counts
+    ? (filter === "all"
+        ? s.counts.reduce((a, b) => a + b, 0n)
+        : s.counts[Number(filter) - 1]
+      ).toString()
+    : undefined;
   const shown = items
-    .filter((p) => filter === "all" || p.level === Number(filter))
+    .filter(
+      (p) => p.level > 0 && (filter === "all" || p.level === Number(filter)),
+    )
     .sort((a, b) =>
       sort === "level"
         ? b.level - a.level ||
@@ -1689,13 +1985,24 @@ function Leaderboard({
             <option value="level">Level</option>
           </select>
         </div>
-        <span>{shown.length} activated Pepes</span>
+        <span role="status">
+          {activeCount !== undefined
+            ? `${activeCount} activated Pepes${loading || error || localError ? ` · ${shown.length} rows loaded` : ""}`
+            : "Loading activated Pepes…"}
+        </span>
       </div>
-      {error || localError ? (
-        <ErrorBox error={error || localError} retry={retry} />
-      ) : loading ? (
+      {(error || localError) && (
+        <ReadIssue
+          error={error || localError}
+          retry={() => {
+            retry();
+            retryRows();
+          }}
+        />
+      )}
+      {(loading || !events) && !items.length ? (
         <p role="status">Loading activated Pepes from chain…</p>
-      ) : !shown.length ? (
+      ) : !shown.length && !error && !localError ? (
         <Empty
           title={
             filter === "all"
@@ -1733,7 +2040,16 @@ function Leaderboard({
             <tbody>
               {shown.map((p, i) => (
                 <tr key={p.id.toString()}>
-                  <td className="muted">{String(i + 1).padStart(2, "0")}</td>
+                  <td className="muted">
+                    {String(i + 1).padStart(2, "0")}
+                    {rowErrors[String(p.id)] && (
+                      <ReadIssue
+                        error="Row update unavailable"
+                        retry={retryRows}
+                        compact
+                      />
+                    )}
+                  </td>
                   <td>
                     <Link
                       to={`https://opensea.io/assets/ethereum/${C.addresses.collection}/${p.id}`}
@@ -1746,7 +2062,28 @@ function Leaderboard({
                   </td>
                   <td>{p.weight.toString()}×</td>
                   <td>{C.fmt(p.pending, 18, 8)}</td>
-                  <td>{s ? C.fmt(C.streamRate(p, s), 18, 8) : "—"}</td>
+                  <td>
+                    {C.selectState(s, [
+                      "streamEnd",
+                      "time",
+                      "weight",
+                      "backlog",
+                    ])
+                      ? C.fmt(
+                          C.streamRate(
+                            p,
+                            C.selectState(s, [
+                              "streamEnd",
+                              "time",
+                              "weight",
+                              "backlog",
+                            ])!,
+                          ),
+                          18,
+                          8,
+                        )
+                      : "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -1764,25 +2101,36 @@ function Auctions({
   ready,
   events,
   eventError,
-}: ActionProps & { events?: C.Activity[]; eventError: string }) {
+  retryEvents,
+}: ActionProps<C.AuctionState> & {
+  events?: C.Activity[];
+  eventError: string;
+  retryEvents: () => void;
+}) {
   const [items, setItems] = useState<C.Listing[]>(),
     [error, setError] = useState(""),
     [reload, setReload] = useState(0);
   useEffect(() => {
     let active = true;
-    if (s)
-      C.listings(s.block)
-        .then((v) => {
-          if (active) {
-            setItems(v);
-            setError("");
-          }
-        })
-        .catch((e) => active && setError(C.errorText(e)));
+    (s?.block ? Promise.resolve(s.block) : C.client.getBlockNumber())
+      .then((block) => C.listings(block))
+      .then((v) => {
+        if (active) {
+          setItems(v);
+          setError("");
+        }
+      })
+      .catch((e) => active && setError(C.errorText(e)));
     return () => {
       active = false;
     };
   }, [s?.block, reload]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!document.hidden) setReload((x) => x + 1);
+    }, 15000);
+    return () => clearInterval(timer);
+  }, []);
   const sales = events?.filter((e) => e.event === "AuctionSold").reverse();
   return (
     <>
@@ -1803,8 +2151,8 @@ function Auctions({
       </div>
       {items?.length ? (
         <div className="nft-grid">
-          {s &&
-            items.map((a) => (
+          {items.map((a) =>
+            s ? (
               <AuctionCard
                 key={a.tokenId.toString()}
                 auction={a}
@@ -1814,7 +2162,17 @@ function Auctions({
                 connect={connect}
                 ready={ready}
               />
-            ))}
+            ) : (
+              <article className="nft-card" key={String(a.tokenId)}>
+                <NftImage id={a.tokenId} />
+                <div className="nft-body">
+                  <h2>Pepe #{String(a.tokenId)}</h2>
+                  <p>{C.fmt(a.price)} OG</p>
+                  <p className="small muted">Purchase controls are loading.</p>
+                </div>
+              </article>
+            ),
+          )}
         </div>
       ) : items ? (
         <Empty title="No Pepes on the block.">
@@ -1826,12 +2184,15 @@ function Auctions({
       )}
       <section className="past-sales">
         <h2>Past sales</h2>
-        {eventError ? (
-          <ErrorBox error={eventError} />
-        ) : !sales ? (
+        {eventError && <ReadIssue error={eventError} retry={retryEvents} />}
+        {!sales ? (
           <p>Syncing sale history…</p>
         ) : !sales.length ? (
-          <p className="muted">No confirmed auction sales yet.</p>
+          <p className="muted">
+            {eventError
+              ? "Sale history is still incomplete."
+              : "No confirmed auction sales yet."}
+          </p>
         ) : (
           <div
             className="table-wrap"
@@ -1880,7 +2241,10 @@ function AuctionCard({
   review,
   connect,
   ready,
-}: ActionProps & { auction: C.Listing; state: C.State }) {
+}: ActionProps<C.AuctionState> & {
+  auction: C.Listing;
+  state: C.AuctionState;
+}) {
   const now = useNow(s),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -2006,11 +2370,15 @@ function Stats({
   error,
   sync,
   retry,
+  stateErrors,
+  retryState,
 }: {
-  state?: C.State;
+  state: C.Snapshot;
   events?: C.Activity[];
   error: string;
   sync: string;
+  stateErrors: C.StateErrors;
+  retryState: (keys?: readonly (keyof C.State)[]) => void;
   retry: () => void;
 }) {
   const totals = events ? C.eventTotals(events) : undefined;
@@ -2041,27 +2409,35 @@ function Stats({
       <section className="stats-grid">
         <Stat
           label="Total weight"
-          value={s?.weight.toString() ?? "—"}
+          error={stateErrors.weight}
+          retry={() => retryState(["weight"])}
+          value={s?.weight?.toString() ?? "—"}
           sub="Across activated NFTs"
         />
         {[1, 2, 3].map((l, i) => (
           <Stat
             key={l}
             label={`Active level ${l}`}
-            value={s?.counts[i].toString() ?? "—"}
-            sub={`${s?.weights[i] ?? "—"}× weight each`}
+            error={stateErrors.counts || stateErrors.weights}
+            retry={() => retryState(["counts", "weights"])}
+            value={s?.counts?.[i]?.toString() ?? "—"}
+            sub={`${s?.weights?.[i] ?? "—"}× weight each`}
           />
         ))}
         <Stat
           label="Backlog left"
+          error={stateErrors.backlog}
+          retry={() => retryState(["backlog"])}
           value={C.fmt(s?.backlog)}
           unit="ETH"
           sub="Unreleased holder rewards"
         />
         <Stat
           label="Stream end"
+          error={stateErrors.streamEnd}
+          retry={() => retryState(["streamEnd"])}
           value={
-            s
+            s.streamEnd !== undefined
               ? s.streamEnd
                 ? new Date(Number(s.streamEnd) * 1000).toLocaleDateString()
                 : "Not streaming"
@@ -2075,42 +2451,54 @@ function Stats({
         />
         <Stat
           label="Holder fees allocated"
+          error={error}
+          retry={retry}
           value={C.fmt(totals?.holders)}
           unit="ETH"
           sub="Includes launch surplus and backlog"
         />
         <Stat
           label="Holder payouts"
+          error={error}
+          retry={retry}
           value={C.fmt(totals?.paid)}
           unit="ETH"
           sub="ETH paid on confirmed exits"
         />
         <Stat
           label="Team fees allocated"
+          error={error}
+          retry={retry}
           value={C.fmt(totals?.team)}
           unit="ETH"
           sub="From all FeeSplit events"
         />
         <Stat
           label="Team paid"
+          error={error}
+          retry={retry}
           value={C.fmt(totals?.teamPaid)}
           unit="ETH"
           sub="Successful TeamPaid events"
         />
         <Stat
           label="Team credit"
+          error={stateErrors.teamCredit}
+          retry={() => retryState(["teamCredit"])}
           value={C.fmt(s?.teamCredit)}
           unit="ETH"
           sub="Funded ETH awaiting a successful send"
         />
         <Stat
           label="OG burned"
+          error={stateErrors.burned}
+          retry={() => retryState(["burned"])}
           value={C.fmt(s?.burned, s?.decimals, 0)}
           unit="OG"
           sub="Read directly from the token"
         />
       </section>
-      {error && <ErrorBox error={error} retry={retry} />}
+      {error && <ReadIssue error={error} retry={retry} />}
       <section className="events">
         <div className="section-heading">
           <div>

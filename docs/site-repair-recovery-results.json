@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "checks": [
+    "Failed burn read affects burned/market-cap cards; price, holder payouts and Trade quote keep working.",
+    "Small card Retry repairs the failed field and dependent market cap.",
+    "Browser 403 on primary plus 429 on secondary rotates to real Blast; state and persisted history resume with adaptive log ranges.",
+    "Background 15-second refresh automatically recovers a failed card."
+  ],
+  "errors": [],
+  "isolatedText": "OG PRICE\n2.0606e-8 ETH\nPool spot price \u00b7 before fees\nCIRCULATING MARKET CAP\n\u2014 ETH\nUnburned supply \u00d7 pool price\nUpdate unavailable \u00b7 retrying\nRetry\nOG BURNED\n\u2014 OG\nPermanently sent to burn address\nUpdate unavailable \u00b7 retrying\nRetry\nPAID TO HOLDERS\n1.0648 ETH\nSum of confirmed exit payouts",
+  "requestCount": 119
+}

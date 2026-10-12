@@ -1,0 +1,424 @@
+{
+  "selected": [
+    "https://rpc.mevblocker.io",
+    "https://eth.drpc.org",
+    "https://eth-mainnet.public.blastapi.io"
+  ],
+  "probes": [
+    {
+      "origin": "https://og.sites.imd.fun/",
+      "at": "2026-10-12T06:54:59.070Z",
+      "results": [
+        {
+          "url": "https://ethereum-rpc.publicnode.com",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 113
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6507",
+            "ms": 57
+          },
+          "logs": {
+            "status": 403,
+            "error": {
+              "code": -32602,
+              "message": "Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode"
+            },
+            "ms": 48
+          }
+        },
+        {
+          "url": "https://eth.drpc.org",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 106
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6507",
+            "ms": 36
+          },
+          "logs": {
+            "status": 400,
+            "error": {
+              "message": "ranges over 10000 blocks are not supported on free plan",
+              "code": 35
+            },
+            "ms": 68
+          }
+        },
+        {
+          "url": "https://ethereum.public.blockpi.network/v1/rpc",
+          "chain": {
+            "status": 404,
+            "ms": 293
+          },
+          "block": {
+            "status": 404,
+            "ms": 141
+          },
+          "logs": {
+            "status": 404,
+            "ms": 156
+          }
+        },
+        {
+          "url": "https://eth.llamarpc.com",
+          "chain": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 290
+          },
+          "block": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 224
+          },
+          "logs": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 223
+          }
+        },
+        {
+          "url": "https://1rpc.io/eth",
+          "chain": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 64
+          },
+          "block": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 37
+          },
+          "logs": {
+            "error": "TimeoutError: signal timed out",
+            "ms": 9000
+          }
+        },
+        {
+          "url": "https://eth.meowrpc.com",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 296
+          },
+          "block": {
+            "status": 429,
+            "ms": 115
+          },
+          "logs": {
+            "status": 429,
+            "ms": 111
+          }
+        },
+        {
+          "url": "https://rpc.flashbots.net",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 136
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6507",
+            "ms": 71
+          },
+          "logs": {
+            "error": "TimeoutError: signal timed out",
+            "ms": 9000
+          }
+        }
+      ]
+    },
+    {
+      "origin": "https://og.sites.imd.fun/",
+      "at": "2026-10-12T06:57:14.087Z",
+      "results": [
+        {
+          "url": "https://rpc.mevblocker.io",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 271
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6512",
+            "ms": 124
+          },
+          "logs": {
+            "status": 200,
+            "result": {
+              "count": 2035
+            },
+            "ms": 279
+          }
+        },
+        {
+          "url": "https://eth-mainnet.public.blastapi.io",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 68
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6512",
+            "ms": 37
+          },
+          "logs": {
+            "status": 400,
+            "error": {
+              "code": -32600,
+              "message": "You can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: [0x18efa68, 0x18efa71]"
+            },
+            "ms": 33
+          }
+        },
+        {
+          "url": "https://eth.merkle.io",
+          "chain": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 48
+          },
+          "block": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 22
+          },
+          "logs": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 24
+          }
+        },
+        {
+          "url": "https://ethereum.rpc.subquery.network/public",
+          "chain": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 33
+          },
+          "block": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 3
+          },
+          "logs": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 4
+          }
+        },
+        {
+          "url": "https://eth.api.onfinality.io/public",
+          "chain": {
+            "status": 429,
+            "error": {
+              "code": -32029,
+              "message": "Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit"
+            },
+            "ms": 89
+          },
+          "block": {
+            "status": 429,
+            "error": {
+              "code": -32029,
+              "message": "Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit"
+            },
+            "ms": 21
+          },
+          "logs": {
+            "status": 429,
+            "error": {
+              "code": -32029,
+              "message": "Too Many Requests, Please apply an OnFinality API key or contact us to receive a higher rate limit"
+            },
+            "ms": 26
+          }
+        },
+        {
+          "url": "https://ethereum.gateway.tenderly.co",
+          "chain": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 61
+          },
+          "block": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 20
+          },
+          "logs": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 21
+          }
+        },
+        {
+          "url": "https://rpc.flashbots.net",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 267
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6512",
+            "ms": 31
+          },
+          "logs": {
+            "error": "TypeError: Failed to fetch",
+            "ms": 10025
+          }
+        },
+        {
+          "url": "https://eth.drpc.org",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 72
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6512",
+            "ms": 32
+          },
+          "logs": {
+            "status": 400,
+            "error": {
+              "message": "ranges over 10000 blocks are not supported on free plan",
+              "code": 35
+            },
+            "ms": 30
+          }
+        }
+      ]
+    },
+    {
+      "origin": "https://og.sites.imd.fun/",
+      "at": "2026-10-12T07:00:18.609Z",
+      "results": [
+        {
+          "url": "https://rpc.mevblocker.io",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 279
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6521",
+            "ms": 122
+          },
+          "logs": {
+            "status": 200,
+            "result": {
+              "count": 1
+            },
+            "ms": 133
+          },
+          "callResult": {
+            "status": 200,
+            "result": "0x0000000000000000000000000000000000000000000000000000000000000012",
+            "ms": 124
+          }
+        },
+        {
+          "url": "https://eth.drpc.org",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 78
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6521",
+            "ms": 37
+          },
+          "logs": {
+            "status": 200,
+            "result": {
+              "count": 1
+            },
+            "ms": 163
+          },
+          "callResult": {
+            "status": 200,
+            "result": "0x0000000000000000000000000000000000000000000000000000000000000012",
+            "ms": 42
+          }
+        },
+        {
+          "url": "https://eth-mainnet.public.blastapi.io",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 130
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6521",
+            "ms": 29
+          },
+          "logs": {
+            "status": 200,
+            "result": {
+              "count": 1
+            },
+            "ms": 31
+          },
+          "callResult": {
+            "status": 200,
+            "result": "0x0000000000000000000000000000000000000000000000000000000000000012",
+            "ms": 88
+          }
+        },
+        {
+          "url": "https://rpc.flashbots.net",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 104
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6521",
+            "ms": 28
+          },
+          "logs": {
+            "error": "TimeoutError: signal timed out",
+            "ms": 9000
+          },
+          "callResult": {
+            "status": 403,
+            "error": {
+              "code": -32601,
+              "message": "rpc method is not whitelisted"
+            },
+            "ms": 52
+          }
+        },
+        {
+          "url": "https://ethereum-rpc.publicnode.com",
+          "chain": {
+            "status": 200,
+            "result": "0x1",
+            "ms": 62
+          },
+          "block": {
+            "status": 200,
+            "result": "0x18f6521",
+            "ms": 37
+          },
+          "logs": {
+            "status": 403,
+            "error": {
+              "code": -32602,
+              "message": "Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode"
+            },
+            "ms": 46
+          },
+          "callResult": {
+            "status": 200,
+            "result": "0x0000000000000000000000000000000000000000000000000000000000000012",
+            "ms": 33
+          }
+        }
+      ]
+    }
+  ]
+}

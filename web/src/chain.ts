@@ -1,6 +1,5 @@
 import {
   createPublicClient,
-  http,
   parseAbi,
   encodeAbiParameters,
   parseAbiParameters,
@@ -10,10 +9,14 @@ import {
   parseUnits,
   decodeEventLog,
   type Abi,
+  type AbiEvent,
   type Address,
   type Hex,
 } from "viem";
 import { mainnet } from "viem/chains";
+import { resilientTransport } from "./rpc";
+import { createEventHistory } from "./history";
+export { setReadProvider } from "./rpc";
 import deployment from "./deployment.json";
 import verified from "./verified.json";
 import abis from "./abis.json";
@@ -24,11 +27,7 @@ export const addresses = Object.fromEntries(
 export const abi = abis as Record<string, Abi>;
 export const client = createPublicClient({
   chain: mainnet,
-  transport: http(cfg.rpc, {
-    batch: { wait: 20, batchSize: 50 },
-    timeout: 20000,
-    retryCount: 2,
-  }),
+  transport: resilientTransport,
 });
 export const nftAbi = parseAbi([
   "function ownerOf(uint256) view returns (address)",
@@ -189,90 +188,139 @@ export async function verifyRuntime() {
     if (actual.toLowerCase() !== expected.toLowerCase())
       throw Error("Contract relationship verification failed.");
 }
-export async function loadState(): Promise<State> {
+export type Snapshot = Partial<State>;
+export type StateErrors = Partial<Record<keyof State, string>>;
+export const TRADE_FIELDS = [
+  "block",
+  "time",
+  "fetched",
+  "pool",
+  "sqrt",
+  "lpFee",
+  "decimals",
+  "launchFee",
+  "normalFee",
+] as const;
+export const PEPE_FIELDS = [
+  ...TRADE_FIELDS,
+  "weight",
+  "backlog",
+  "streamEnd",
+  "lock",
+  "costs",
+  "weights",
+] as const;
+export const AUCTION_FIELDS = [
+  "block",
+  "time",
+  "fetched",
+  "decimals",
+  "floor",
+  "duration",
+] as const;
+export type TradeState = Pick<State, (typeof TRADE_FIELDS)[number]>;
+export type PepeState = Pick<State, (typeof PEPE_FIELDS)[number]>;
+export type AuctionState = Pick<State, (typeof AUCTION_FIELDS)[number]>;
+export function selectState<K extends keyof State>(
+  s: Snapshot,
+  fields: readonly K[],
+): Pick<State, K> | undefined {
+  return fields.every((k) => s[k] !== undefined)
+    ? (s as Pick<State, K>)
+    : undefined;
+}
+// Each field is published independently; a broken read cannot discard its neighbours.
+export async function loadSnapshot(
+  publish: (patch: Snapshot, errors: StateErrors) => void,
+  keys?: readonly (keyof State)[],
+): Promise<Snapshot> {
+  const next: Snapshot = {};
   const block = await client.getBlock();
   const b = block.number;
-  const [
-    pool,
-    decimals,
-    supply,
-    burned,
-    launchFee,
-    normalFee,
-    decay,
-    weight,
-    backlog,
-    streamEnd,
-    lock,
-    floor,
-    duration,
-    teamCredit,
-    counts,
-    costs,
-    weights,
-  ] = await Promise.all([
-    read<Pool>("OGHook", "poolKey", [], b),
-    read<number>("OG", "decimals", [], b),
-    read("OG", "totalSupply", [], b),
-    read("OG", "totalBurned", [], b),
-    read("OGHook", "launchFeeNow", [], b),
-    read("OGHook", "NORMAL_FEE", [], b),
-    read("OGHook", "decayMinutesLeft", [], b),
-    read("OGDistributor", "totalWeight", [], b),
-    read("OGDistributor", "backlogLeft", [], b),
-    read("OGDistributor", "streamEnd", [], b),
-    read("OGDistributor", "EXIT_LOCK", [], b),
-    read("OGAuction", "FLOOR", [], b),
-    read("OGAuction", "DURATION", [], b),
-    read("OGHook", "teamCredit", [], b),
-    Promise.all(
-      [1, 2, 3].map((l) => read("OGDistributor", "activePerLevel", [l], b)),
-    ),
-    Promise.all(
-      [1, 2, 3].map((l) => read("OGDistributor", "cumulativeCost", [l], b)),
-    ),
-    Promise.all(
-      [1, 2, 3].map((l) => read("OGDistributor", "levelWeight", [l], b)),
-    ),
-  ]);
-  const poolId = keccak256(
-    encodeAbiParameters(parseAbiParameters(poolTuple), [pool]),
+  Object.assign(next, { block: b, time: block.timestamp, fetched: Date.now() });
+  publish(next, {});
+  const jobs: [keyof State, () => Promise<unknown>][] = [
+    ["pool", () => read<Pool>("OGHook", "poolKey", [], b)],
+    ["decimals", () => read<number>("OG", "decimals", [], b)],
+    ["supply", () => read("OG", "totalSupply", [], b)],
+    ["burned", () => read("OG", "totalBurned", [], b)],
+    ["launchFee", () => read("OGHook", "launchFeeNow", [], b)],
+    ["normalFee", () => read("OGHook", "NORMAL_FEE", [], b)],
+    ["decay", () => read("OGHook", "decayMinutesLeft", [], b)],
+    ["weight", () => read("OGDistributor", "totalWeight", [], b)],
+    ["backlog", () => read("OGDistributor", "backlogLeft", [], b)],
+    ["streamEnd", () => read("OGDistributor", "streamEnd", [], b)],
+    ["lock", () => read("OGDistributor", "EXIT_LOCK", [], b)],
+    ["floor", () => read("OGAuction", "FLOOR", [], b)],
+    ["duration", () => read("OGAuction", "DURATION", [], b)],
+    ["teamCredit", () => read("OGHook", "teamCredit", [], b)],
+    [
+      "counts",
+      () =>
+        Promise.all(
+          [1, 2, 3].map((l) => read("OGDistributor", "activePerLevel", [l], b)),
+        ),
+    ],
+    [
+      "costs",
+      () =>
+        Promise.all(
+          [1, 2, 3].map((l) => read("OGDistributor", "cumulativeCost", [l], b)),
+        ),
+    ],
+    [
+      "weights",
+      () =>
+        Promise.all(
+          [1, 2, 3].map((l) => read("OGDistributor", "levelWeight", [l], b)),
+        ),
+    ],
+  ];
+  await Promise.all(
+    jobs
+      .filter(([key]) => !keys || keys.includes(key) || key === "pool")
+      .map(async ([key, run]) => {
+        try {
+          const value = await run();
+          Object.assign(next, { [key]: value });
+          publish({ [key]: value }, { [key]: undefined });
+          if (key === "pool") {
+            try {
+              const poolId = keccak256(
+                encodeAbiParameters(parseAbiParameters(poolTuple), [
+                  value as Pool,
+                ]),
+              );
+              const [sqrt, , , lpFee] = await client.readContract({
+                address: addresses.stateView,
+                abi: stateAbi,
+                functionName: "getSlot0",
+                args: [poolId],
+                blockNumber: b,
+              });
+              if (!sqrt) throw Error("Pool is not initialized. Retry shortly.");
+              Object.assign(next, { sqrt, lpFee });
+              publish({ sqrt, lpFee }, { sqrt: undefined, lpFee: undefined });
+            } catch (e) {
+              publish({}, { sqrt: errorText(e), lpFee: errorText(e) });
+            }
+          }
+        } catch (e) {
+          publish({}, { [key]: errorText(e) });
+        }
+      }),
   );
-  const [sqrt, , , lpFee] = await client.readContract({
-    address: addresses.stateView,
-    abi: stateAbi,
-    functionName: "getSlot0",
-    args: [poolId],
-    blockNumber: b,
-  });
-  if (!sqrt)
-    throw Error("Pool is not initialized. Refresh after initialization.");
-  return {
-    block: b,
-    time: block.timestamp,
-    fetched: Date.now(),
-    pool,
-    sqrt,
-    lpFee,
-    decimals,
-    supply,
-    burned,
-    launchFee,
-    normalFee,
-    decay,
-    weight,
-    counts,
-    costs,
-    weights,
-    backlog,
-    streamEnd,
-    lock,
-    floor,
-    duration,
-    teamCredit,
-  };
+  return next;
 }
-export function spotPrice(s: State) {
+// Full snapshots are useful for validation. UI code consumes progressive snapshots above.
+export async function loadState(): Promise<State> {
+  const failures: StateErrors = {};
+  const s = await loadSnapshot((_, errors) => Object.assign(failures, errors));
+  if (Object.values(failures).some(Boolean))
+    throw Error(Object.values(failures).filter(Boolean).join("; "));
+  return s as State;
+}
+export function spotPrice(s: Pick<State, "sqrt" | "decimals">) {
   return (2 ** 192 / Number(s.sqrt) ** 2) * 10 ** (s.decimals - 18);
 }
 export async function quote(
@@ -412,69 +460,143 @@ export async function sellApprovals(
     );
   return steps;
 }
-export async function pepes(ids: bigint[], block?: bigint) {
-  const result: Pepe[] = [];
-  for (let i = 0; i < ids.length; i += 25) {
-    result.push(
-      ...(await Promise.all(
-        ids.slice(i, i + 25).map(async (id) => {
-          const [level, weight, pending, last] = await Promise.all([
-            read<number>("OGDistributor", "level", [id], block),
-            read("OGDistributor", "weight", [id], block),
-            read("OGDistributor", "pending", [id], block),
-            read("OGDistributor", "lastActivation", [id], block),
-          ]);
-          return { id, level, weight, pending, last };
-        }),
-      )),
+export async function pepe(id: bigint, block?: bigint): Promise<Pepe> {
+  const [level, weight, pending, last] = await Promise.all([
+    read<number>("OGDistributor", "level", [id], block),
+    read("OGDistributor", "weight", [id], block),
+    read("OGDistributor", "pending", [id], block),
+    read("OGDistributor", "lastActivation", [id], block),
+  ]);
+  return { id, level, weight, pending, last };
+}
+export async function pepeResults(
+  ids: bigint[],
+  block?: bigint,
+  update?: (p: Pepe) => void,
+) {
+  const items: Pepe[] = [],
+    errors: { id: bigint; error: string }[] = [];
+  for (let i = 0; i < ids.length; i += 6) {
+    await Promise.all(
+      ids.slice(i, i + 6).map(async (id) => {
+        try {
+          const p = await pepe(id, block);
+          items.push(p);
+          update?.(p);
+        } catch (e) {
+          errors.push({ id, error: errorText(e) });
+        }
+      }),
     );
   }
-  return result;
+  return { items, errors };
+}
+export async function pepes(ids: bigint[], block?: bigint) {
+  const result = await pepeResults(ids, block);
+  if (result.errors.length) throw Error(result.errors[0].error);
+  return result.items;
 }
 export async function owned(
   owner: Address,
   progress: (s: string) => void,
+  onFound?: (ids: bigint[]) => void,
 ): Promise<bigint[]> {
-  const block = await client.getBlockNumber();
+  const block = await client.getBlockNumber({ cacheTime: 0 });
   const balance = await read("collection", "balanceOf", [owner], block);
-  if (!balance) return [];
+  const key = `og:owned:1:${addresses.collection.toLowerCase()}:${owner.toLowerCase()}`;
+  const save = (ids: bigint[]) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(ids.map(String)));
+    } catch {
+      /* private mode */
+    }
+    onFound?.(ids);
+    return ids;
+  };
+  if (!balance) return save([]);
+  const found = new Set<bigint>();
+  const belongs = async (id: bigint) => {
+    try {
+      return (
+        (
+          await read<Address>("collection", "ownerOf", [id], block)
+        ).toLowerCase() === owner.toLowerCase()
+      );
+    } catch (e) {
+      if (/revert|nonexistent|invalid token/i.test(errorText(e))) return false;
+      throw e;
+    }
+  };
+  // Cache is only a candidate list. Recheck EVERY owner at the current block before showing it.
+  let cached: bigint[] = [];
   try {
-    return await Promise.all(
-      Array.from({ length: Number(balance) }, (_, i) =>
-        read("collection", "tokenOfOwnerByIndex", [owner, BigInt(i)], block),
-      ),
-    );
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    if (
+      Array.isArray(value) &&
+      value.length <= 10000 &&
+      value.every((x) => typeof x === "string" && /^\d{1,12}$/.test(x))
+    )
+      cached = value.map(BigInt);
   } catch {
-    /* ERC721A collection does not necessarily expose enumeration. */
+    /* disabled/corrupt storage */
   }
-  const minted = Number(await read("collection", "totalMinted", [], block));
-  const found: bigint[] = [];
-  for (let start = 0; start <= minted; start += 50) {
-    progress(`Finding your Pepes · ${Math.min(start, minted)} / ${minted}`);
-    const batch = await Promise.all(
-      Array.from({ length: Math.min(50, minted + 1 - start) }, async (_, i) => {
-        const id = BigInt(start + i);
-        try {
-          return (
-            await read<Address>("collection", "ownerOf", [id], block)
-          ).toLowerCase() === owner.toLowerCase()
-            ? id
-            : undefined;
-        } catch (e) {
-          if (/revert|nonexistent|invalid token/i.test(errorText(e)))
-            return undefined;
-          throw e;
-        }
+  for (let i = 0; i < cached.length; i += 12) {
+    await Promise.all(
+      cached.slice(i, i + 12).map(async (id) => {
+        if (await belongs(id)) found.add(id);
       }),
     );
-    found.push(...batch.filter((x): x is bigint => x !== undefined));
-    if (found.length === Number(balance)) return found;
   }
-  if (found.length !== Number(balance))
-    throw Error(
-      "Ownership scan was incomplete. Retry or load a specific token ID.",
+  if (found.size) onFound?.([...found]);
+  if (found.size === Number(balance)) return save([...found]);
+  // Probe enumeration once: this ERC721A collection may not implement ERC721Enumerable.
+  let first: bigint | undefined;
+  try {
+    first = await read("collection", "tokenOfOwnerByIndex", [owner, 0n], block);
+  } catch (e) {
+    if (
+      !/revert|returned no data|does not exist|function selector/i.test(
+        errorText(e),
+      )
+    )
+      throw e;
+  }
+  if (first !== undefined) {
+    const ids = [first];
+    for (let offset = 1; offset < Number(balance); offset += 12) {
+      ids.push(
+        ...(await Promise.all(
+          Array.from(
+            { length: Math.min(12, Number(balance) - offset) },
+            (_, i) =>
+              read(
+                "collection",
+                "tokenOfOwnerByIndex",
+                [owner, BigInt(offset + i)],
+                block,
+              ),
+          ),
+        )),
+      );
+      onFound?.([...ids]);
+    }
+    return save(ids);
+  }
+  const minted = Number(await read("collection", "totalMinted", [], block));
+  for (let start = 0; start <= minted; start += 24) {
+    progress(`Finding your Pepes · ${Math.min(start, minted)} / ${minted}`);
+    await Promise.all(
+      Array.from({ length: Math.min(24, minted + 1 - start) }, async (_, i) => {
+        const id = BigInt(start + i);
+        if (!found.has(id) && (await belongs(id))) found.add(id);
+      }),
     );
-  return found;
+    if (found.size) onFound?.([...found]);
+    if (found.size === Number(balance)) return save([...found]);
+  }
+  throw Error(
+    "Ownership scan was incomplete. Retry or load a specific token ID.",
+  );
 }
 const metadataCache = new Map<
   string,
@@ -540,21 +662,67 @@ export async function listings(block: bigint) {
     );
   return result;
 }
-async function logRange(from: bigint, to: bigint): Promise<Activity[]> {
-  try {
+const historyNames = new Set([
+  "FeeSplit",
+  "TeamPaid",
+  "Activated",
+  "Upgraded",
+  "Exited",
+  "AuctionListed",
+  "AuctionSold",
+]);
+const historyEvents = [
+  ...new Map(
+    Object.values(abi)
+      .flat()
+      .filter(
+        (entry): entry is AbiEvent =>
+          entry.type === "event" && historyNames.has(entry.name),
+      )
+      .map((entry) => [entry.name, entry]),
+  ).values(),
+];
+const history = createEventHistory<Activity>({
+  key: `og:events:v4:${cfg.chainId}:${cfg.deploymentBlock}:${addresses.OGHook.toLowerCase()}`,
+  start: BigInt(cfg.deploymentBlock),
+  getHash: async (blockNumber) => (await client.getBlock({ blockNumber })).hash,
+  validate: (e) => {
+    if (!historyNames.has(e.event) || !e.args || typeof e.args !== "object")
+      return false;
+    const required =
+      e.event === "FeeSplit"
+        ? ["team", "rewards", "surplus", "grossETH"]
+        : e.event === "TeamPaid"
+          ? ["amount"]
+          : e.event === "Exited"
+            ? ["tokenId", "ethPaid"]
+            : e.event === "AuctionSold"
+              ? ["tokenId", "burned"]
+              : ["tokenId"];
+    return required.every((key) => typeof e.args[key] === "bigint");
+  },
+  fetch: async (from, to) => {
     const logs = await client.getLogs({
       address: [addresses.OGHook, addresses.OGDistributor, addresses.OGAuction],
+      events: historyEvents,
       fromBlock: from,
       toBlock: to,
     });
     return logs.flatMap((l) => {
+      if (
+        l.removed ||
+        l.blockNumber === null ||
+        l.transactionHash === null ||
+        l.logIndex === null
+      )
+        return [];
+      const name =
+        l.address.toLowerCase() === addresses.OGHook.toLowerCase()
+          ? "OGHook"
+          : l.address.toLowerCase() === addresses.OGAuction.toLowerCase()
+            ? "OGAuction"
+            : "OGDistributor";
       try {
-        const name =
-          l.address.toLowerCase() === addresses.OGHook.toLowerCase()
-            ? "OGHook"
-            : l.address.toLowerCase() === addresses.OGAuction.toLowerCase()
-              ? "OGAuction"
-              : "OGDistributor";
         const e = decodeEventLog({
           abi: abi[name],
           data: l.data,
@@ -564,43 +732,19 @@ async function logRange(from: bigint, to: bigint): Promise<Activity[]> {
           {
             event: e.eventName!,
             args: e.args as unknown as Record<string, unknown>,
-            block: l.blockNumber!,
-            hash: l.transactionHash!,
-            index: l.logIndex!,
+            block: l.blockNumber,
+            hash: l.transactionHash,
+            index: l.logIndex,
           },
         ];
       } catch {
         return [];
-      }
+      } // Only application ABI events contribute to these totals.
     });
-  } catch (e) {
-    if (to - from < 20n) throw e;
-    const mid = (from + to) / 2n;
-    return [...(await logRange(from, mid)), ...(await logRange(mid + 1n, to))];
-  }
-}
-let eventCache: Activity[] = [];
-let lastEventBlock = BigInt(cfg.deploymentBlock) - 1n;
-export async function events(to: bigint, progress: (s: string) => void) {
-  let from = lastEventBlock - 20n;
-  if (from < BigInt(cfg.deploymentBlock)) from = BigInt(cfg.deploymentBlock);
-  if (from > to) {
-    eventCache = [];
-    from = BigInt(cfg.deploymentBlock);
-  }
-  const next = eventCache.filter((e) => e.block < from);
-  for (let start = from; start <= to; start += 2000n) {
-    progress(`Syncing events · block ${start.toLocaleString()}`);
-    next.push(
-      ...(await logRange(start, start + 1999n < to ? start + 1999n : to)),
-    );
-  }
-  eventCache = next;
-  lastEventBlock = to;
-  return [...next].sort((a, b) =>
-    a.block === b.block ? a.index - b.index : a.block < b.block ? -1 : 1,
-  );
-}
+  },
+});
+export const events = history.sync;
+export const cachedEvents = history.snapshot;
 export function eventTotals(logs: Activity[]) {
   let paid = 0n,
     team = 0n,
@@ -623,7 +767,10 @@ export function eventTotals(logs: Activity[]) {
   }
   return { paid, team, holders, teamPaid, ids: [...ids] };
 }
-export function streamRate(p: Pepe, s: State) {
+export function streamRate(
+  p: Pepe,
+  s: Pick<State, "streamEnd" | "time" | "weight" | "backlog">,
+) {
   const remaining = s.streamEnd > s.time ? s.streamEnd - s.time : 0n;
   return remaining && s.weight
     ? (s.backlog * p.weight * 3600n) / remaining / s.weight

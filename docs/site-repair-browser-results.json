@@ -1,0 +1,274 @@
+{
+  "status": "passed",
+  "checks": [
+    "Unknown/removed route redirects to Home; exactly six pages; no removed-feature copy; four live Home stats.",
+    "Browser localStorage survives reload; only 32-block overlap and new blocks are requested.",
+    "Real mainnet buy/sell quotes; amount validation focuses field; changing input invalidates quote; hook and pool fee rows preserved.",
+    "My Pepes renders its connect state immediately; wallet dialog keyboard close restores focus.",
+    "Leaderboard populations, live levels/pending ETH, level filter and sort.",
+    "Auctions current-state empty result and 30 confirmed sales; Stats totals, event filter and paging.",
+    "EIP-6963 fixture connects a real current active-NFT owner; wallet provider serves real mainnet ownership/level/reward reads; no signing supported or attempted.",
+    "All six routes reflow at 1440/768/390/320; main mobile action fits first screen; text enlargement; contrast measurements; fonts; reduced motion; wrong chain and account removal."
+  ],
+  "pages": [
+    {
+      "route": "home",
+      "state": "four live metrics including ETH paid to holders",
+      "text": "OG PRICE\n2.0606e-8 ETH\nPool spot price \u00b7 before fees\nCIRCULATING MARKET CAP\n19.52 ETH\nUnburned supply \u00d7 pool price\nOG BURNED\n52,689,866 OG\nPermanently sent to burn address\nPAID TO HOLDERS\n1.0648 ETH\nSum of confirmed exit payouts"
+    },
+    {
+      "route": "trade",
+      "state": "live buy/sell quote, invalid input and stale quote reset"
+    },
+    {
+      "route": "leaderboard",
+      "state": "139 live activated Pepes",
+      "text": "Mainnet \u00b7 block 26,174,880\nRefresh \u21bb\nTHE ACTIVE SWARM\nWeight behind the green.\n\nEvery activated Pepe, ranked by level or pending ETH. Rewards belong to the current NFT owner.\n\nLevel\nAll levels\nLevel 1\nLevel 2\nLevel 3\nSort by\nPending ETH\nLevel\n139 activated Pepes\nRank\tSwarm Pepe\tLevel\tWeight\tPending ETH\tStream ETH / hour\n01\tPepe #1037 \u2197\tL3\t4\u00d7\t0.08564369\t0.00001769\n02\tPepe #1043 \u2197\tL3\t4\u00d7\t0.08564369\t0.00001769\n03\tPepe #69 \u2197\tL3\t4\u00d7\t0.08374079\t0.00001769\n04\tPepe #491 \u2197\tL3\t4\u00d7\t0.08374079\t0.00001769\n05\tPepe #541 \u2197\tL3\t4\u00d7\t0.08368631\t0.00001769\n06\tPepe #542 \u2197\tL3\t4\u00d7\t0.08368563\t0.00001769\n07\tPepe #543 \u2197\tL3\t4\u00d7\t0.08368563\t0.00001769\n08\tPepe #547 \u2197\tL3\t4\u00d7\t0.08368069\t0.00001769\n09\tPepe #575 \u2197\tL3\t4\u00d7\t0.08368069\t0.00001769\n10\tPepe #627 \u2197\tL3\t4\u00d7\t0.0836801\t0.00001769\n11\tPepe #713 \u2197\tL3\t4\u00d7\t0.08365948\t0.00001769\n12\tPepe #737 \u2197\tL3\t4\u00d7\t0.08365938\t0.00001769\n13\tPepe #738 \u2197\tL3\t4\u00d7\t0.08365938\t0.00001769\n14\tPepe #764 \u2197\tL3\t4\u00d7\t0.08365938\t0.00001769\n15\tPepe #766 \u2197\tL3\t4\u00d7\t0.08365929\t0.00001769\n16\tPepe #776 \u2197\tL3\t4\u00d7\t0.08364141\t0.00001769\n17\tPepe #791 \u2197\tL3\t4\u00d7\t0.08364126\t0.00001769\n18\tPepe #792 \u2197\tL3\t4\u00d7\t0.08364107\t0.00001769\n19\tPepe #793 \u2197\tL3\t4\u00d7\t0.08364107\t0.00001769\n20\tPepe #806 \u2197\tL3\t4\u00d7\t0.08361083\t0.00001769\n21\tPepe #1057 \u2197\tL3\t4\u00d7\t0.08353083\t0.00001769\n22\tPepe #1125 \u2197\tL3\t4\u00d7\t0.08346133\t0.00001769\n23\tPepe #1193 \u2197\tL3\t4\u00d7\t0.08346133\t0.00001769\n24\tPepe #176 \u2197\tL3\t4\u00d7\t0.07891296\t0.00001769\n25\tPepe #55 \u2197\tL3\t4\u00d7\t0.07859584\t0.00001769\n26\tPepe #56 \u2197\tL3\t4\u00d7\t0.07842872\t0.00001769\n27\tPepe #177 \u2197\tL3\t4\u00d7\t0.07837794\t0.00001769\n28\tPepe #57 \u2197\tL3\t4\u00d7\t0.07817428\t0.00001769\n29\tPepe #175 \u2197\tL3\t4\u00d7\t0.0775487\t0.00001769\n30\tPepe #794 \u2197\tL3\t4\u00d7\t0.07568586\t0.00001769\n31\tPepe #795 \u2197\tL3\t4\u00d7\t0.0756856\t0.00001769\n32\tPepe #796 \u2197\tL3\t4\u00d7\t0.07558608\t0.00001769\n33\tPepe #604 \u2197\tL3\t4\u00d7\t0.06949519\t0.00001769\n34\tPepe #166 \u2197\tL3\t4\u00d7\t0.06822645\t0.00001769\n35\tPepe #1038 \u2197\tL3"
+    },
+    {
+      "route": "auctions",
+      "state": "current count read on chain and confirmed past sales",
+      "text": "Mainnet \u00b7 block 26,174,880\nRefresh \u21bb\nSECOND CHANCES. SAME SWARM.\nFind your next OG.\n\nExited Pepes return at level 0. The OG price falls to a floor, where it stays until someone buys. Every OG spent is burned.\n\nLive auctions 0\nPrices refreshed on chain; countdown is estimated between blocks.\nNo Pepes on the block.\n\nAn auction starts when a holder exits. Check back for a new chance to join the swarm.\n\nPast sales\nPepe\tOG burned\tBuyer\tTransaction\n#757\t223,723.057\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#497\t210,668.515\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#1242\t210,399.1972\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#733\t210,399.1972\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#592\t209,772.1272\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#395\t209,146.926\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#100\t207,724.8829\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#381\t142,520.5244\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#391\t82,064.4739\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#496\t94,383.4679\t0x651F\u2026534b \u2197\tView sale \u2197\n#405\t64,549.953\t0x1C19\u20268111 \u2197\tView sale \u2197\n#1226\t50,000\t0xDaDb\u20267081 \u2197\tView sale \u2197\n#1214\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1180\t50,000\t0xDaDb\u20267081 \u2197\tView sale \u2197\n#1225\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1227\t50,000\t0xB354\u202666a2 \u2197\tView sale \u2197\n#549\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1039\t50,000\t0xDaDb\u20267081 \u2197\tView sale \u2197\n#530\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#232\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#812\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#823\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#820\t87,615.5346\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#96\t90,385.6809\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1209\t105,269.6885\t0x894b\u20260601 \u2197\tView sale \u2197\n#180\t156,470.679\t0xac55\u20263262 \u2197\tView sale \u2197\n#179\t156,470.679\t0xac55\u20263262 \u2197\tView sale \u2197\n#1040\t151,642.8214\t0xac55\u20263262 \u2197\tView sale \u2197\n#695\t145,003.1416\t0xac55\u20263262 \u2197\tView sale \u2197\n#1213\t181,655.1782\t0x894b\u20260601 \u2197\tView sale \u2197"
+    },
+    {
+      "route": "stats",
+      "state": "12 live metrics and event feed",
+      "text": "TOTAL WEIGHT\n433\nAcross activated NFTs\nACTIVE LEVEL 1\n31\n1\u00d7 weight each\nACTIVE LEVEL 2\n15\n2\u00d7 weight each\nACTIVE LEVEL 3\n93\n4\u00d7 weight each\nBACKLOG LEFT\n1.2049 ETH\nUnreleased holder rewards\nSTREAM END\n11/7/2026\n11/7/2026, 12:38:11 PM\nHOLDER FEES ALLOCATED\n6.5256 ETH\nIncludes launch surplus and backlog\nHOLDER PAYOUTS\n1.0648 ETH\nETH paid on confirmed exits\nTEAM FEES ALLOCATED\n2.0689 ETH\nFrom all FeeSplit events\nTEAM PAID\n2.0689 ETH\nSuccessful TeamPaid events\nTEAM CREDIT\n0 ETH\nFunded ETH awaiting a successful send\nOG BURNED\n52,689,866 OG\nRead directly from the token"
+    },
+    {
+      "route": "my-pepes",
+      "state": "connected read-only wallet using live owner, levels and pending ETH",
+      "text": "Mainnet \u00b7 block 26,174,881\nRefresh \u21bb\nYOUR SWARM\nPut your Pepe to work.\n\nActivate a level to share in ETH rewards. Your Pepe stays in your wallet until you exit.\n\n21 Pepes loaded\nRefresh Pepes\nLoad a specific token ID\nPepe #69\nL3 \u00b7 4\u00d7\nPending ETH\n0.08374097\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #100\nL3 \u00b7 4\u00d7\nPending ETH\n0.0005287\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 30s\nLast activation / upgrade: 10/11/2026, 7:56:11 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #308\nL3 \u00b7 4\u00d7\nPending ETH\n0.02408763\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 2:06:59 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #381\nL3 \u00b7 4\u00d7\nPending ETH\n0.00061448\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 10h 05m 06s\nLast activation / upgrade: 10/11/2026, 5:30:47 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #391\nL3 \u00b7 4\u00d7\nPending ETH\n0.00064556\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 9h 57m 54s\nLast activation / upgrade: 10/11/2026, 5:23:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #395\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052863\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 42s\nLast activation / upgrade: 10/11/2026, 7:56:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #491\nL3 \u00b7 4\u00d7\nPending ETH\n0.08374097\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #497\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052863\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictab"
+    }
+  ],
+  "viewports": [
+    {
+      "route": "home",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "route": "home",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "route": "home",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "route": "home",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "route": "trade",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "route": "trade",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "route": "trade",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "route": "trade",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "route": "my-pepes",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "route": "my-pepes",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "route": "my-pepes",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "route": "my-pepes",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "route": "leaderboard",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "route": "leaderboard",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "route": "leaderboard",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "route": "leaderboard",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "route": "auctions",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "route": "auctions",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "route": "auctions",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "route": "auctions",
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "route": "stats",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "route": "stats",
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "route": "stats",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "route": "stats",
+      "width": 320,
+      "scrollWidth": 320
+    }
+  ],
+  "axe": [
+    {
+      "route": "home",
+      "violations": [],
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ],
+      "passes": 17
+    },
+    {
+      "route": "trade",
+      "violations": [],
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ],
+      "passes": 22
+    },
+    {
+      "route": "my-pepes",
+      "violations": [],
+      "incomplete": [],
+      "passes": 21
+    },
+    {
+      "route": "leaderboard",
+      "violations": [],
+      "incomplete": [],
+      "passes": 24
+    },
+    {
+      "route": "auctions",
+      "violations": [],
+      "incomplete": [],
+      "passes": 21
+    },
+    {
+      "route": "stats",
+      "violations": [],
+      "incomplete": [],
+      "passes": 24
+    }
+  ],
+  "consoleErrors": [],
+  "failedStatic": [],
+  "home": "OG PRICE\n2.0606e-8 ETH\nPool spot price \u00b7 before fees\nCIRCULATING MARKET CAP\n19.52 ETH\nUnburned supply \u00d7 pool price\nOG BURNED\n52,689,866 OG\nPermanently sent to burn address\nPAID TO HOLDERS\n1.0648 ETH\nSum of confirmed exit payouts",
+  "history": {
+    "initialRequests": 556,
+    "firstBlock": "0x18efa68",
+    "maxRange": 1000,
+    "cache": [
+      {
+        "key": "og:events:v4:1:26147432:0x22fded8abce0d93979ebb2a04cfc37c110abe0cc",
+        "bytes": 1463235,
+        "through": "26174873"
+      }
+    ],
+    "resumedRequests": 1
+  },
+  "buyQuote": "Mainnet \u00b7 block 26,174,878\nRefresh \u21bb\nETH \u21c4 OG\nMake your move.\n\nTrade through the live Uniswap v4 pool. Every swap supports the swarm.\n\nBuy OG\nSell OG\nYou pay\nConnect to see balance\nETH\n\u2193\nYou receive \u00b7 estimated\n46,243.330519 OG\nSlippage tolerance\n%\n\nExtra price movement allowed after the quote. Fees are already included.\n\nHook fee \u00b7 buy\n3.5% of gross ETH\nPool fee\n1.25% of pool input\nRefresh quote\n\nMinimum received: 45780.897214177412127132 OG\n\nQuoted at 7:25:03 AM. Refresh after 60 seconds.\n\nConnect wallet to trade\nWHERE THE FEES GO\nA little for the pool.\nA lot for the swarm.\n\nThe hook fee is charged in ETH. Holder rewards follow activated NFTs, weighted by their level.\n\nHook\n3.5% base\nPool\n1.25% liquidity fee\n\nDuring launch, the buy hook fee starts higher and decays. The extra fee enters the holder backlog. Pool and hook fees use different bases; adding their percentages does not give the exact total cost.\n\nInspect the hook \u2197",
+  "sellQuote": "Mainnet \u00b7 block 26,174,878\nRefresh \u21bb\nETH \u21c4 OG\nMake your move.\n\nTrade through the live Uniswap v4 pool. Every swap supports the swarm.\n\nBuy OG\nSell OG\nYou pay\nConnect to see balance\nOG\n\u2193\nYou receive \u00b7 estimated\n0.00002 ETH\nSlippage tolerance\n%\n\nExtra price movement allowed after the quote. Fees are already included.\n\nHook fee \u00b7 sell\n3.5% of gross ETH\nPool fee\n1.25% of pool input\nRefresh quote\n\nMinimum received: 0.000019439372141692 ETH\n\nQuoted at 7:25:03 AM. Refresh after 60 seconds.\n\nConnect wallet to trade\nWHERE THE FEES GO\nA little for the pool.\nA lot for the swarm.\n\nThe hook fee is charged in ETH. Holder rewards follow activated NFTs, weighted by their level.\n\nHook\n3.5% base\nPool\n1.25% liquidity fee\n\nDuring launch, the buy hook fee starts higher and decays. The extra fee enters the holder backlog. Pool and hook fees use different bases; adding their percentages does not give the exact total cost.\n\nInspect the hook \u2197",
+  "activeCount": 139,
+  "auctions": "Mainnet \u00b7 block 26,174,880\nRefresh \u21bb\nSECOND CHANCES. SAME SWARM.\nFind your next OG.\n\nExited Pepes return at level 0. The OG price falls to a floor, where it stays until someone buys. Every OG spent is burned.\n\nLive auctions 0\nPrices refreshed on chain; countdown is estimated between blocks.\nNo Pepes on the block.\n\nAn auction starts when a holder exits. Check back for a new chance to join the swarm.\n\nPast sales\nPepe\tOG burned\tBuyer\tTransaction\n#757\t223,723.057\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#497\t210,668.515\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#1242\t210,399.1972\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#733\t210,399.1972\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#592\t209,772.1272\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#395\t209,146.926\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#100\t207,724.8829\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#381\t142,520.5244\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#391\t82,064.4739\t0x5b95\u20260D06 \u2197\tView sale \u2197\n#496\t94,383.4679\t0x651F\u2026534b \u2197\tView sale \u2197\n#405\t64,549.953\t0x1C19\u20268111 \u2197\tView sale \u2197\n#1226\t50,000\t0xDaDb\u20267081 \u2197\tView sale \u2197\n#1214\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1180\t50,000\t0xDaDb\u20267081 \u2197\tView sale \u2197\n#1225\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1227\t50,000\t0xB354\u202666a2 \u2197\tView sale \u2197\n#549\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1039\t50,000\t0xDaDb\u20267081 \u2197\tView sale \u2197\n#530\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#232\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#812\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#823\t50,000\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#820\t87,615.5346\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#96\t90,385.6809\t0x68b8\u2026Da04 \u2197\tView sale \u2197\n#1209\t105,269.6885\t0x894b\u20260601 \u2197\tView sale \u2197\n#180\t156,470.679\t0xac55\u20263262 \u2197\tView sale \u2197\n#179\t156,470.679\t0xac55\u20263262 \u2197\tView sale \u2197\n#1040\t151,642.8214\t0xac55\u20263262 \u2197\tView sale \u2197\n#695\t145,003.1416\t0xac55\u20263262 \u2197\tView sale \u2197\n#1213\t181,655.1782\t0x894b\u20260601 \u2197\tView sale \u2197",
+  "stats": "TOTAL WEIGHT\n433\nAcross activated NFTs\nACTIVE LEVEL 1\n31\n1\u00d7 weight each\nACTIVE LEVEL 2\n15\n2\u00d7 weight each\nACTIVE LEVEL 3\n93\n4\u00d7 weight each\nBACKLOG LEFT\n1.2049 ETH\nUnreleased holder rewards\nSTREAM END\n11/7/2026\n11/7/2026, 12:38:11 PM\nHOLDER FEES ALLOCATED\n6.5256 ETH\nIncludes launch surplus and backlog\nHOLDER PAYOUTS\n1.0648 ETH\nETH paid on confirmed exits\nTEAM FEES ALLOCATED\n2.0689 ETH\nFrom all FeeSplit events\nTEAM PAID\n2.0689 ETH\nSuccessful TeamPaid events\nTEAM CREDIT\n0 ETH\nFunded ETH awaiting a successful send\nOG BURNED\n52,689,866 OG\nRead directly from the token",
+  "owner": "0x5b95a971b4583a5f011e9da082acdd679b870d06",
+  "ownedText": "Mainnet \u00b7 block 26,174,881\nRefresh \u21bb\nYOUR SWARM\nPut your Pepe to work.\n\nActivate a level to share in ETH rewards. Your Pepe stays in your wallet until you exit.\n\n21 Pepes loaded\nRefresh Pepes\nLoad a specific token ID\nPepe #69\nL3 \u00b7 4\u00d7\nPending ETH\n0.08374097\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #100\nL3 \u00b7 4\u00d7\nPending ETH\n0.0005287\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 30s\nLast activation / upgrade: 10/11/2026, 7:56:11 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #308\nL3 \u00b7 4\u00d7\nPending ETH\n0.02408763\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 2:06:59 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #381\nL3 \u00b7 4\u00d7\nPending ETH\n0.00061448\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 10h 05m 06s\nLast activation / upgrade: 10/11/2026, 5:30:47 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #391\nL3 \u00b7 4\u00d7\nPending ETH\n0.00064556\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 9h 57m 54s\nLast activation / upgrade: 10/11/2026, 5:23:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #395\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052863\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 42s\nLast activation / upgrade: 10/11/2026, 7:56:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #491\nL3 \u00b7 4\u00d7\nPending ETH\n0.08374097\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #497\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052863\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 42s\nLast activation / upgrade: 10/11/2026, 7:56:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #542\nL3 \u00b7 4\u00d7\nPending ETH\n0.0836858\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #543\nL3 \u00b7 4\u00d7\nPending ETH\n0.0836858\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #575\nL3 \u00b7 4\u00d7\nPending ETH\n0.08368086\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:59 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #592\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052863\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 42s\nLast activation / upgrade: 10/11/2026, 7:56:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #733\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052857\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 54s\nLast activation / upgrade: 10/11/2026, 7:56:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #757\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052857\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 54s\nLast activation / upgrade: 10/11/2026, 7:56:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #764\nL3 \u00b7 4\u00d7\nPending ETH\n0.08365956\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 12:59:59 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #776\nL3 \u00b7 4\u00d7\nPending ETH\n0.08364159\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 1:00:11 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #794\nL3 \u00b7 4\u00d7\nPending ETH\n0.07568603\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 1:00:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #795\nL3 \u00b7 4\u00d7\nPending ETH\n0.07568578\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 1:00:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nPepe #796\nL3 \u00b7 4\u00d7\nPending ETH\n0.07558626\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 1:00:23 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nLoading on-chain art\u2026\nPepe #1193\nL3 \u00b7 4\u00d7\nPending ETH\n0.0834615\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit lock complete\nLast activation / upgrade: 10/8/2026, 1:00:59 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nLoading on-chain art\u2026\nPepe #1242\nL3 \u00b7 4\u00d7\nPending ETH\n0.00052857\nStream ETH / hour\n0.00001769\n\nLive backlog rate at this block. New trading fees are additional and unpredictable.\n\nExit unlocks in 12h 30m 54s\nLast activation / upgrade: 10/11/2026, 7:56:35 PM\n\nHand in NFT & collect ETH\n\nExiting sends this NFT to auction at level 0.\n\nRewards follow the NFT. Transferring a Pepe also transfers its level and pending rewards. ETH is paid only when the current owner exits and hands the NFT to auction.",
+  "mobileAction": {
+    "x": 18,
+    "y": 657.1875,
+    "width": 172,
+    "height": 46
+  },
+  "textEnlargement": {
+    "width": 768,
+    "scrollWidth": 768
+  },
+  "contrast": [
+    {
+      "selector": ".hero h1",
+      "fg": "rgb(238, 242, 232)",
+      "bg": "rgb(11, 14, 11)",
+      "ratio": 17.101314635606624
+    },
+    {
+      "selector": ".hero-copy > p",
+      "fg": "rgb(160, 174, 152)",
+      "bg": "rgb(11, 14, 11)",
+      "ratio": 8.321220076047162
+    },
+    {
+      "selector": ".hero .primary",
+      "fg": "rgb(20, 32, 14)",
+      "bg": "rgb(180, 240, 120)",
+      "ratio": 12.614491361732847
+    },
+    {
+      "selector": ".stat .eyebrow",
+      "fg": "rgb(160, 174, 152)",
+      "bg": "rgb(11, 14, 11)",
+      "ratio": 8.321220076047162
+    }
+  ],
+  "fonts": {
+    "display": true,
+    "body": true
+  },
+  "reducedMotion": "0s"
+}

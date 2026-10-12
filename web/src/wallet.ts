@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Address, Hex } from "viem";
+import { setReadProvider, timed } from "./rpc";
 export type Provider = {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
   on?: (event: string, fn: (x: unknown) => void) => void;
@@ -76,6 +77,12 @@ export function useWallet() {
       wallet.provider.removeListener?.("disconnect", disconnect);
     };
   }, [wallet]);
+  useEffect(() => {
+    setReadProvider(
+      wallet && account && chain === 1 ? wallet.provider : undefined,
+    );
+    return () => setReadProvider(undefined);
+  }, [wallet, account, chain]);
   return {
     choices,
     account,
@@ -89,7 +96,10 @@ export function useWallet() {
         throw Error(
           "No account selected. Choose an account in your wallet and retry.",
         );
-      const chainId = await w.provider.request({ method: "eth_chainId" });
+      const chainId = await timed(
+        w.provider.request({ method: "eth_chainId" }),
+        8000,
+      );
       setWallet(w);
       setAccount(accounts[0]);
       setChain(Number(chainId));

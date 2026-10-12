@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "checks": [
+    "403 and 429 rotate to a working provider",
+    "concurrency limit and failed-provider cooldown",
+    "wallet-first reads, hung-wallet timeout and public fallback, disconnect",
+    "public transport refuses writes and wallet authorization requests",
+    "identical concurrent requests are shared",
+    "contract reverts retain their error and are not endlessly retried",
+    "adaptive log shrinking down to provider limit and three-worker bound",
+    "persistent checkpoint resumes with 32-block overlap without duplicates",
+    "checkpoint block-hash mismatch discards old-fork history",
+    "failed log range never advances checkpoint; completed ranges survive and resume",
+    "corrupt, disabled and full localStorage do not break live reads"
+  ]
+}

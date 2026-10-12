@@ -1663,3 +1663,45 @@ dialog > .wide {
     color: HighlightText;
   }
 }
+
+/* Read failures belong to the affected metric, never over the whole interface. */
+.read-issue {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: var(--warning);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-block: 10px;
+  overflow-wrap: anywhere;
+}
+.read-issue.compact {
+  font-size: 0.75rem;
+  gap: 4px;
+}
+.read-issue .text-button {
+  color: var(--warning);
+  border: 1px solid var(--line);
+  min-height: 32px;
+}
+.stat {
+  min-width: 0;
+}
+.stat strong {
+  overflow-wrap: anywhere;
+}
+nav {
+  flex-wrap: wrap;
+}
+
+/* Let enlarged hero text wrap its columns before the decorative artwork overflows. */
+@media (min-width: 46.001rem) and (max-width: 66rem) {
+  .hero {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .hero-copy,
+  .hero-art {
+    min-width: 0;
+  }
+}
